@@ -1,0 +1,7 @@
+fn main() {
+	write(1234);
+	write(0b01);
+	write(0o12);
+	write(0x12a);
+}
+

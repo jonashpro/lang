@@ -5,8 +5,10 @@ from error import IllegalCharacterError, UnclosedStringError
 from position import Position
 from token_ import TokenType, Token
 
+BINARY_DIGITS = '01'
+OCTAL_DIGITS = '01234567'
 DECIMAL_DIGITS = '0123456789'
-HEXADECIMAL_DIGITS = DECIMAL_DIGITS + 'abcdefABCDEF'
+HEXADECIMAL_DIGITS = '0123456789abcdefABCDEF'
 
 CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 
@@ -138,10 +140,25 @@ class Lexer:
 
 				continue
 
-			# hexadecimal
-			elif self.current_char == '0' and self.peek_next_char() == 'x':
+			# binary, octal and hexadecimal
+			elif self.current_char == '0' and self.peek_next_char() in 'box':
+				if self.peek_next_char() == 'b':
+					base = 2
+					digits = BINARY_DIGITS
+
+				elif self.peek_next_char() == 'o':
+					base = 8
+					digits = OCTAL_DIGITS
+
+				elif self.peek_next_char() == 'x':
+					base = 16
+					digits = HEXADECIMAL_DIGITS
+
+				self.update_position_and_current_char()  # 0
+				self.update_position_and_current_char()  # b, o, x
+
 				token_type = TokenType.TYPE_INT
-				token_value = self.get_hexadecimal_token()
+				token_value = self.get_int_token(digits, base)
 
 			elif self.current_char in CHARACTERS:
 				token_type = TokenType.TYPE_IDENTIFIER
@@ -294,17 +311,15 @@ class Lexer:
 		self.update_position_and_current_char()  # "
 		return token_value
 
-	def get_hexadecimal_token(self):
-		"""Returns a token of type int, but in base 16."""
-
-		self.update_position_and_current_char()  # 0
-		self.update_position_and_current_char()  # x
+	def get_int_token(self, digits, base):
+		"""Returns a token of type int, but using the digits paremeter
+		and base parameter."""
 
 		token_value = ''
 
-		while self.current_char in HEXADECIMAL_DIGITS:
+		while self.current_char in digits:
 			token_value += self.current_char
 			self.update_position_and_current_char()
 
-		return int(token_value, base=16)
+		return int(token_value, base=base)
 
