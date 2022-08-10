@@ -55,7 +55,7 @@ class Disassembler:
 			self.code = self.code[len(VM_SIGNATURE):]
 
 		else:
-			print('imvalid file format', file=sys.stderr)
+			print('invalid file format', file=sys.stderr)
 			exit(1)
 
 	def get_instruction(self):
@@ -107,6 +107,7 @@ class Disassembler:
 		return f'\033[1;30m// {comment}\033[0;0m'
 
 	def disassemble(self):
+		print(self.code)
 		if self.data_section:
 			print('DATA')
 

@@ -13,6 +13,7 @@ from parser_ import Parser
 from semantic_analyzer import SemanticAnalyzer
 from code_generator import CodeGenerator
 from disassembler import Disassembler
+from vm import VM
 
 
 def read_file(file_name):
@@ -55,6 +56,7 @@ def usage():
 	print('  build <file>      compile <file>')
 	print('  asm   <file>      show assembly code of <file>')
 	print('  help              this message')
+	print('  run   <file>      run <file>')
 
 
 def main():
@@ -89,6 +91,17 @@ def main():
 
 	elif option == 'help':
 		usage()
+	
+	elif option == 'run':
+		if len(sys.argv) < 3:
+			print('run need <file>')
+			usage()
+			exit(1)
+
+		file_name = sys.argv[2]
+		code = compile_from_file(file_name)
+		vm = VM(code)
+		vm.run()
 
 	else:
 		print(f'unknown option: {option}')
