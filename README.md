@@ -2,12 +2,6 @@
 
 A simple compiler.
 
-## Build
-```
-$ cd src/
-$ make
-```
-
 ## Hello World
 ```rust
 fn main() {
@@ -17,11 +11,9 @@ fn main() {
 ```
 
 ```
-$ ./src/lang.py build hello.lang
-$ ./src/vm hello.lang.vm
+$ ./src/lang.py run hello.lang
 ```
 
 ## TODO
-- [ ] Virtual Machine
 - [ ] Optimizer
 
