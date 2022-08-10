@@ -2,9 +2,23 @@
 
 A simple compiler.
 
-## Compiling a program
+## Build
 ```
-$ ./src/lang.py build <file>
+$ cd src/
+$ make
+```
+
+## Hello World
+```rust
+fn main() {
+	let message = "hello world!\m";
+	write(message);
+}
+```
+
+```
+$ ./src/lang.py build hello.lang
+$ ./src/vm hello.lang.vm
 ```
 
 ## TODO
