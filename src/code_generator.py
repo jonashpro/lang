@@ -46,6 +46,8 @@ class CodeGenerator:
 		self.address_to_link = {}
 
 	def update_current_node(self):
+		"""Update the current node."""
+
 		self.position += 1
 
 		if self.position < len(self.ast):
@@ -66,7 +68,8 @@ class CodeGenerator:
 			self.current_address += 1
 
 	def search_data(self, data_to_search):
-		"""Returns de index of the parameter data in data section."""
+		"""Returns the index of the parameter data_to_search in data
+		section."""
 
 		for position, data in enumerate(self.data_section):
 			if data == data_to_search:
@@ -75,6 +78,8 @@ class CodeGenerator:
 		return -1
 
 	def emit_int32(self, int32, custom_address=None):
+		"""Emit an integer number (32 bits)."""
+
 		for byte in int32.to_bytes(4, byteorder='big', signed=True):
 			self.emit_instruction(byte, custom_address)
 
@@ -82,9 +87,13 @@ class CodeGenerator:
 				custom_address += 1
 
 	def emit_float(self, float_, custom_address=None):
+		"""Emit a float number."""
+
 		raise NotImplementedError('emit_float')
 	
 	def emit_string(self, string, custom_address=None):
+		"""Emit a string."""
+
 		if string in self.data_section:
 			self.emit_int32(self.search_data(string), custom_address)
 
@@ -93,6 +102,8 @@ class CodeGenerator:
 			self.emit_int32(len(self.data_section) - 1, custom_address)
 
 	def generate_node(self, node):
+		"""Generate the code of a node."""
+
 		if isinstance(node, IntNode):
 			self.emit_instruction(OpCodes.LDI)
 			self.emit_int32(node.value)
@@ -223,6 +234,8 @@ class CodeGenerator:
 			raise NotImplementedError(node)
 
 	def link_addresses(self):
+		"""Link the addresses of functions."""
+
 		for address in self.address_to_link:
 			self.emit_int32(
 				self.functions_address[self.address_to_link[address]],
@@ -230,16 +243,23 @@ class CodeGenerator:
 			)
 
 	def generate(self):
+		"""Generate all code."""
+
 		while self.current_node:
 			self.generate_node(self.current_node)
 			self.update_current_node()
 
+		# call the entry point
 		self.emit_instruction(OpCodes.CAL)
 		self.emit_int32(self.functions_address['main'])
 
+		# emit a halt instruction
 		self.emit_instruction(OpCodes.HLT)
+
+		# link all addresses
 		self.link_addresses()
 
+		# generate the bytes of data section
 		bytes_of_data_section = []
 
 		for data in self.data_section:
@@ -250,5 +270,6 @@ class CodeGenerator:
 
 		bytes_of_data_section.append(0)
 
+		# return all code
 		return VM_SIGNATURE + bytes_of_data_section + self.code_section
 

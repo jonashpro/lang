@@ -70,6 +70,8 @@ class Lexer:
 		]
 
 	def update_position(self):
+		"""Update the position."""
+
 		if self.current_char == '\n':
 			self.line += 1
 			self.column = 1
@@ -80,6 +82,8 @@ class Lexer:
 		self.position += 1
 	
 	def update_current_char(self):
+		"""Update the current char."""
+
 		if self.position < len(self.source):
 			self.current_char = self.source[self.position]
 
@@ -87,10 +91,15 @@ class Lexer:
 			self.current_char = None
 
 	def update_position_and_current_char(self):
+		"""Update the position and the current char."""
+
 		self.update_position()
 		self.update_current_char()
 
 	def peek_next_char(self):
+		"""Returns the next char, but without updating the position and
+		current char."""
+
 		if self.position + 1 < len(self.source):
 			return self.source[self.position + 1]
 
@@ -98,6 +107,8 @@ class Lexer:
 			return None
 
 	def append_new_token(self, line, column, typ, value):
+		"""Append a new token object in self.tokens."""
+
 		self.tokens.append(Token(
 			Position(
 				self.file_name,

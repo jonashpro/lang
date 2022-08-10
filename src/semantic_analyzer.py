@@ -37,6 +37,8 @@ class SemanticAnalyzer:
 		self.call_nodes = []
 
 	def update_current_node(self):
+		"""Update the current node."""
+
 		self.position += 1
 
 		if self.position < len(self.ast):
@@ -46,15 +48,23 @@ class SemanticAnalyzer:
 			self.current_node = None
 
 	def new_scope(self):
+		"""Create a new scope."""
+
 		self.variables.append(self.variables[-1].copy())
 	
 	def end_scope(self):
+		"""Return to last scope."""
+
 		self.variables.pop()
 
 	def add_variable(self, variable):
+		"""Add a new variable in current scope."""
+
 		self.variables[-1].append(variable)
 
 	def variable_exists_in_the_current_scope(self, variable_name):
+		"""Returns if a variable exists in the current scope."""
+
 		for variable in self.variables[-1]:
 			if variable.name == variable_name:
 				return True
@@ -62,6 +72,8 @@ class SemanticAnalyzer:
 		return False
 	
 	def mark_variable_as_used(self, variable_name):
+		"""Mark a variable as used."""
+
 		for variable in self.variables[-1]:
 			if variable.name == variable_name:
 				if variable.initialized == False:
@@ -75,6 +87,8 @@ class SemanticAnalyzer:
 				variable.used = True
 
 	def function_exists(self, function_name):
+		"""Returns is a function exists."""
+
 		for function in self.functions:
 			if function.name == function_name:
 				return True
@@ -82,17 +96,25 @@ class SemanticAnalyzer:
 		return False
 
 	def get_function_arguments(self, function_name):
+		"""Returns the arguments of a function."""
+
 		for function in self.functions:
 			if function.name == function_name:
 				return function.arguments
 
 	def is_built_in_function(self, name):
+		"""Returns if a function is built in."""
+
 		return name in built_in_functions
 
 	def get_built_in_function_arguments(self, name):
+		"""Returns the arguments of a built in function."""
+
 		return built_in_functions[name][0]
 
 	def analyze_node(self, node):
+		"""Analyze the semantic of a node."""
+
 		if isinstance(node, UnaryOperationNode):
 			self.analyze_node(node.left)
 
@@ -187,10 +209,13 @@ class SemanticAnalyzer:
 			self.call_nodes.append(node)
 
 	def analyze(self):
+		"""Analyze all nodes."""
+
 		while self.current_node:
 			self.analyze_node(self.current_node)
 			self.update_current_node()
 
+		# checks if the calls are valid
 		for call in self.call_nodes:
 			if not self.function_exists(call.name):
 				error = UndefinedError(call.position, call.name)
@@ -207,6 +232,7 @@ class SemanticAnalyzer:
 				)
 				error.show_error_and_abort()
 
+		# checks if have a main function (entry point)
 		if not self.function_exists('main'):
 			error = NoEntryPointError()
 			error.show_error_and_abort()
