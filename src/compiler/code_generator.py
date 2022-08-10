@@ -134,6 +134,10 @@ class CodeGenerator:
 				self.generate_node(statement)
 
 		elif isinstance(node, LetNode) or isinstance(node, AssignNode):
+			if isinstance(node, LetNode):
+				self.emit_instruction(OpCodes.LET)
+				self.emit_string(node.name)
+
 			if node.value is not None:
 				self.generate_node(node.value)
 			

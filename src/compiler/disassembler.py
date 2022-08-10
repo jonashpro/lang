@@ -45,6 +45,7 @@ class Disassembler:
 			OpCodes.DUP: 'dup',
 			OpCodes.INC: 'inc',
 			OpCodes.DEC: 'dec',
+			OpCodes.LET: 'let',
 		}
 
 		self.current_address = -1
@@ -145,7 +146,7 @@ class Disassembler:
 					),
 				)
 
-			elif instruction in (OpCodes.STO, OpCodes.LDV):
+			elif instruction in (OpCodes.STO, OpCodes.LDV, OpCodes.LET):
 				print(self.opcodes_as_string[instruction], end=' ')
 				data_number = self.get_int32()
 				print(self.formated_number(data_number), end=' ')

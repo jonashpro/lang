@@ -33,4 +33,5 @@ class OpCodes:
 	DUP = 28  # duplicate
 	INC = 29  # increment
 	DEC = 30  # decrement
+	LET = 31  # let
 
