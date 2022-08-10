@@ -22,6 +22,7 @@ class CodeGenerator:
 		self.current_address = 0
 
 		self.unary_instructions = {
+			TokenType.OPERATOR_MINUS: OpCodes.NEG,
 			TokenType.OPERATOR_NOT: OpCodes.NOT,
 		}
 
@@ -105,6 +106,11 @@ class CodeGenerator:
 
 		elif isinstance(node, UnaryOperationNode):
 			self.generate_node(node.left)
+
+			# +1 == 1, so ignore
+			if node.operator == TokenType.OPERATOR_PLUS:
+				return
+
 			self.emit_instruction(self.unary_instructions[node.operator])
 
 		elif isinstance(node, BinaryOperationNode):

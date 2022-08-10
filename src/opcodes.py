@@ -26,7 +26,8 @@ class OpCodes:
 	LE  = 21  # less or equal than
 	GT  = 22  # greater than
 	GE  = 23  # greate or equal than
-	AND = 24
-	OR  = 25
-	NOT = 26
+	AND = 24  # and
+	OR  = 25  # or
+	NOT = 26  # not
+	NEG = 27  # negate
 

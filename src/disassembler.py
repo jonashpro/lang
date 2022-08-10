@@ -38,6 +38,10 @@ class Disassembler:
 			OpCodes.LE: 'le',
 			OpCodes.GT: 'gt',
 			OpCodes.GE: 'ge',
+			OpCodes.NOT: 'not',
+			OpCodes.AND: 'and',
+			OpCodes.OR: 'or',
+			OpCodes.NEG: 'neg',
 		}
 
 		self.current_address = -1
@@ -85,6 +89,9 @@ class Disassembler:
 
 	def formated_number(self, number):
 		if number < 10:
+			number = f'  {number}'
+
+		elif number < 100:
 			number = f' {number}'
 
 		else:
