@@ -11,14 +11,17 @@ from node import *
 
 
 class Variable:
-	def __init__(self, position, name, used, initialized):
+	def __init__(self, position, used, initialized):
 		self.position = position
-		self.name = name
 		self.used = used
 		self.initialized = initialized
 
-	def __repr__(self):
-		return self.name
+
+class Function:
+	def __init__(self, position, arguments):
+		self.position = position
+		self.arguments = arguments
+
 
 class SemanticAnalyzer:
 	def __init__(self, ast):
@@ -28,12 +31,12 @@ class SemanticAnalyzer:
 		self.current_node = None
 		self.update_current_node()
 
-		# variabels are stored in a stack. every time a new scope
+		# variables are stored in a stack. every time a new scope
 		# begins, the top of the stack is duplicated, and when it ends,
 		# removed
-		self.variables = [[]]
+		self.variables = [{}]
 
-		self.functions = []
+		self.functions = {}
 		self.call_nodes = []
 
 	def update_current_node(self):
@@ -57,50 +60,44 @@ class SemanticAnalyzer:
 
 		self.variables.pop()
 
-	def add_variable(self, variable):
+	def add_variable(self, position, name, initialized):
 		"""Add a new variable in current scope."""
 
-		self.variables[-1].append(variable)
+		self.variables[-1][name] = Variable(position, False, initialized)
 
-	def variable_exists_in_the_current_scope(self, variable_name):
+	def variable_exists_in_the_current_scope(self, name):
 		"""Returns if a variable exists in the current scope."""
 
-		for variable in self.variables[-1]:
-			if variable.name == variable_name:
-				return True
-
-		return False
+		print(self.variables)
+		return name in self.variables[-1]
 	
-	def mark_variable_as_used(self, variable_name):
-		"""Mark a variable as used."""
+	def mark_variable_as_used(self, position, name):
+		"""Mark a variable as used.  The parameter position if used for
+		possible warnings."""
 
-		for variable in self.variables[-1]:
-			if variable.name == variable_name:
-				if variable.initialized == False:
-					warning = VariableWasUsedButNotInitializedWarning(
-						variable.position,
-						variable.name,
-					)
+		if not self.variables[-1][name].initialized:
+			warning = VariableWasUsedButNotInitializedWarning(
+				position,
+				name,
+			)
+			warning.show_error()
 
-					warning.show_error()
+		self.variables[-1][name].used = True
 
-				variable.used = True
-
-	def function_exists(self, function_name):
+	def function_exists(self, name):
 		"""Returns is a function exists."""
 
-		for function in self.functions:
-			if function.name == function_name:
-				return True
+		return name in self.functions
 
-		return False
+	def add_function(self, position, name, arguments):
+		"""Add a new function."""
 
-	def get_function_arguments(self, function_name):
+		self.functions[name] = Function(position, arguments)
+
+	def get_function_arguments(self, name):
 		"""Returns the arguments of a function."""
 
-		for function in self.functions:
-			if function.name == function_name:
-				return function.arguments
+		return self.functions[name].arguments
 
 	def is_built_in_function(self, name):
 		"""Returns if a function is built in."""
@@ -124,19 +121,18 @@ class SemanticAnalyzer:
 
 		elif isinstance(node, LetNode):
 			self.analyze_node(node.value)
-			self.add_variable(Variable(
+			self.add_variable(
 				node.position,
 				node.name,
-				False,
 				True if node.value else False,
-			))
+			)
 
 		elif isinstance(node, IdentifierNode):
 			if not self.variable_exists_in_the_current_scope(node.name):
 				error = UndefinedError(node.position, node.name)
 				error.show_error_and_abort()
 
-			self.mark_variable_as_used(node.name)
+			self.mark_variable_as_used(node.position, node.name)
 
 		elif isinstance(node, BlockNode):
 			self.new_scope()
@@ -147,17 +143,16 @@ class SemanticAnalyzer:
 			self.end_scope()
 
 		elif isinstance(node, FnNode):
-			self.functions.append(node)
+			self.add_function(node.position, node.name, node.arguments)
 
 			self.new_scope()
 
 			for argument in node.arguments:
-				self.add_variable(Variable(
+				self.add_variable(
 					argument.position,
 					argument.name,
-					False,
 					True,
-				))
+				)
 
 			self.analyze_node(node.body)
 
