@@ -11,7 +11,7 @@ $ make
 ## Hello World
 ```rust
 fn main() {
-	let message = "hello world!\m";
+	let message = "hello world!\n";
 	write(message);
 }
 ```
