@@ -133,7 +133,7 @@ class CodeGenerator:
 			for statement in node.body:
 				self.generate_node(statement)
 
-		elif isinstance(node, LetNode):
+		elif isinstance(node, LetNode) or isinstance(node, AssignNode):
 			if node.value is not None:
 				self.generate_node(node.value)
 			

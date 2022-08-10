@@ -3,10 +3,10 @@
 
 from built_in import built_in_functions
 from error import UndefinedError
-from error import VariableWasUsedButNotInitializedWarning
 from error import VariableIsNotCallableError
 from error import WrongNumberOfArgumentsError
 from error import NoEntryPointError
+from error import RedeclarationError
 from node import *
 
 
@@ -68,21 +68,17 @@ class SemanticAnalyzer:
 	def variable_exists_in_the_current_scope(self, name):
 		"""Returns if a variable exists in the current scope."""
 
-		print(self.variables)
 		return name in self.variables[-1]
 	
-	def mark_variable_as_used(self, position, name):
-		"""Mark a variable as used.  The parameter position if used for
-		possible warnings."""
-
-		if not self.variables[-1][name].initialized:
-			warning = VariableWasUsedButNotInitializedWarning(
-				position,
-				name,
-			)
-			warning.show_error()
+	def mark_variable_as_used(self, name):
+		"""Mark a variable as used."""
 
 		self.variables[-1][name].used = True
+	
+	def mark_variable_as_initialized(self, name):
+		"""Mark a variable as initialized."""
+
+		self.variables[-1][name].initialized = True
 
 	def function_exists(self, name):
 		"""Returns is a function exists."""
@@ -120,6 +116,10 @@ class SemanticAnalyzer:
 			self.analyze_node(node.right)
 
 		elif isinstance(node, LetNode):
+			if self.variable_exists_in_the_current_scope(node.name):
+				error = RedeclarationError(node.position, node.name)
+				error.show_error_and_abort()
+
 			self.analyze_node(node.value)
 			self.add_variable(
 				node.position,
@@ -132,7 +132,7 @@ class SemanticAnalyzer:
 				error = UndefinedError(node.position, node.name)
 				error.show_error_and_abort()
 
-			self.mark_variable_as_used(node.position, node.name)
+			self.mark_variable_as_used(node.name)
 
 		elif isinstance(node, BlockNode):
 			self.new_scope()
@@ -169,6 +169,15 @@ class SemanticAnalyzer:
 
 		elif isinstance(node, ReturnNode):
 			self.analyze_node(node.value)
+
+		elif isinstance(node, AssignNode):
+			if not self.variable_exists_in_the_current_scope(node.name):
+				error = UndefinedError(node.position, node.name)
+				error.show_error_and_abort()
+
+			self.analyze_node(node.value)
+
+			self.mark_variable_as_initialized(node.name)
 
 		elif isinstance(node, CallNode):
 			for argument in node.arguments:

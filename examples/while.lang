@@ -3,7 +3,7 @@ fn main() {
 
 	while (x < 10) {
 		write(x);
-		let x = x + 1;
+		x = x + 1;
 	}
 }
 

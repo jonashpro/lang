@@ -93,6 +93,7 @@ class Parser:
 		             |  <while_statement>
 		             |  <function_call> ';'
 		             |  <return_statement>
+		             |  <assign_statement>
 		"""
 
 		if self.current_token.type == TokenType.KEYWORD_LET:
@@ -108,9 +109,13 @@ class Parser:
 			return self.while_statement()
 
 		elif self.current_token.type == TokenType.TYPE_IDENTIFIER:
-			node = self.function_call()
-			self.match(TokenType.OPERATOR_SEMICOLON)
-			return node
+			if self.peek_next_token().type == TokenType.OPERATOR_LPAREN:
+				node = self.function_call()
+				self.match(TokenType.OPERATOR_SEMICOLON)
+				return node
+
+			else:
+				return self.assign_statement()
 
 		elif self.current_token.type == TokenType.KEYWORD_RETURN:
 			return self.return_statement()
@@ -122,9 +127,24 @@ class Parser:
 			)
 			error.show_error_and_abort()
 
+	def assign_statement(self):
+		"""
+		<assign_statement> ::= <identifier> '=' <expression> ';'
+		"""
+
+		position = self.current_token.position
+
+		name = self.current_token.value
+		self.match(TokenType.TYPE_IDENTIFIER)
+		self.match(TokenType.OPERATOR_ASSIGN)
+		value = self.expression()
+		self.match(TokenType.OPERATOR_SEMICOLON)
+
+		return AssignNode(position, name, value)
+
 	def return_statement(self):
 		"""
-		'return' <expression> ';'
+		<return_statement> ::= 'return' <expression> ';'
 		"""
 		
 		position = self.current_token.position

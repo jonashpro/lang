@@ -51,16 +51,7 @@ class UnexpectedError(Error):
 
 class UndefinedError(Error):
 	def __init__(self, position, name):
-		super().__init__(position, ERROR, f'"{name}" is undefined')
-
-
-class VariableWasUsedButNotInitializedWarning(Error):
-	def __init__(self, position, name):
-		super().__init__(
-			position,
-			WARNING,
-			f'variable "{name}" was used, but not initialized',
-		)
+		super().__init__(position, ERROR, f'{name} is undefined')
 
 
 class WrongNumberOfArgumentsError(Error):
@@ -68,7 +59,7 @@ class WrongNumberOfArgumentsError(Error):
 		super().__init__(
 			position,
 			ERROR,
-			f'function "{function}" expected {expected} argument(s),' \
+			f'function {function} expected {expected} argument(s),' \
 				+ f' but {got} are given'
 		)
 
@@ -78,11 +69,16 @@ class VariableIsNotCallableError(Error):
 		super().__init__(
 			position,
 			ERROR,
-			f'variable "{variable}" is not callable',
+			f'variable {variable} is not callable',
 		)
 
 
 class NoEntryPointError(Error):
 	def __init__(self):
 		super().__init__(None, ERROR, 'no entry point')
+
+
+class RedeclarationError(Error):
+	def __init__(self, position, name):
+		super().__init__(position, ERROR, f'redeclaration of {name}')
 

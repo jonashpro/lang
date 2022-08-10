@@ -139,3 +139,13 @@ class ReturnNode(Node):
 	def __repr__(self):
 		return f'(return {self.value})'
 
+
+class AssignNode(Node):
+	def __init__(self, position, name, value):
+		super().__init__(position)
+		self.name = name
+		self.value = value
+	
+	def __repr__(self):
+		return f'(= {self.name} {self.value})'
+
