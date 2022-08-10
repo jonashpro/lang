@@ -7,8 +7,11 @@
 #include <cstdio>
 #include <cassert>
 
+// vm type definitions
 #define VM_INT int32_t
 #define VM_FLOAT float
+
+#define DEBUG 0
 
 #define STACK_MAX      4096
 #define CALL_STACK_MAX 1024
@@ -56,6 +59,54 @@ typedef enum
 	WRT = 0x0d
 } OpCode;
 
+std::string opcode_as_string(OpCode opcode)
+{
+	switch (opcode)
+	{
+	case HLT:
+		return "hlt";
+	
+	case LDI:
+		return "ldi";
+	
+	case LDF:
+		return "ldf";
+	
+	case LDS:
+		return "lds";
+	
+	case STO:
+		return "sto";
+	
+	case LDV:
+		return "ldv";
+	
+	case JMP:
+		return "jmp";
+	
+	case JPT:
+		return "jpt";
+	
+	case JPF:
+		return "jpf";
+	
+	case CAL:
+		return "cal";
+	
+	case RET:
+		return "ret";
+	
+	case LDN:
+		return "ldn";
+	
+	case NOP:
+		return "nop";
+	
+	case WRT:
+		return "wrt";
+	}
+}
+
 // stack
 typedef enum
 {
@@ -94,8 +145,11 @@ struct StackValue
 				break;
 
 			default:
-				assert(false && "unreachable");
+				std::cout << "**************" << type << std::endl;
+				assert(0 && "unreachable");
 		}
+
+		std::cout << std::flush;
 	}
 
 	bool to_bool()
@@ -115,7 +169,7 @@ struct StackValue
 				return string_value.length() > 0 ? true : false;
 
 			default:
-				assert(false && "unreachable");
+				assert(0 && "unreachable");
 		}
 	}
 };
@@ -214,11 +268,27 @@ class VM
 
 		void add_variable(VM_INT name, VM_INT address)
 		{
-			if ((size_t)name >= variables[variables.size() - 1].size())
-				variables[variables.size() - 1].push_back(address);
+			while ((size_t)name >= variables[variables.size() - 1].size())
+			{
+				variables[variables.size()-1].push_back(0);
+			}
 		
-			else
-				variables[variables.size() - 1][name] = address;
+			variables[variables.size() - 1][name] = address;
+		}
+
+		void show_stack()
+		{
+			std::cout << "Stack:" << std::endl;
+			
+			if (sp == 0)
+				std::cout << " [EMPTY]" << std::endl;
+
+			for (int index = 0; index < sp; index++)
+			{
+				std::cout << " ";
+				stack[index]->print();
+				std::cout << std::endl;
+			}
 		}
 
 	public:
@@ -280,9 +350,11 @@ class VM
 
 					case LDV:
 					{
-						stack[sp++] = (
-							stack[variables[variables.size() - 1][get_int()]]
+						VM_INT variable = get_int();
+						stack[sp] = (
+							stack[variables[variables.size() - 1][variable]]
 						);
+						sp++;
 						break;
 					}
 
@@ -339,6 +411,9 @@ class VM
 
 					case RET:
 					{
+						if (sp == 0)
+							stack_underflow_error();
+
 						StackValue *return_value = stack[--sp];
 						sp = call_stack[--call_sp];
 						pc = call_stack[--call_sp];
@@ -358,12 +433,22 @@ class VM
 
 					case WRT:
 					{
+						if (sp == 0)
+							stack_underflow_error();
+
 						stack[--sp]->print();
 						break;
 					}
 
 					default:
 						assert(false && "unreachable");
+				}
+
+				if (DEBUG)
+				{
+					std::cout << opcode_as_string(instr) << std::endl;
+					show_stack();
+					std::cout << std::endl << std::endl;
 				}
 			}
 
