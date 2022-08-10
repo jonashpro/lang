@@ -126,12 +126,21 @@ class Disassembler:
 					OpCodes.JPT,
 					OpCodes.JPF,
 					OpCodes.CAL,
-					OpCodes.LDS,
 				):
 
 				print(self.opcodes_as_string[instruction], end=' ')
 				int32 = self.get_int32()
 				print(self.formated_number(int32))
+
+			elif instruction == OpCodes.LDS:
+				print(self.opcodes_as_string[instruction], end=' ')
+				data_number = self.get_int32()
+				print(self.formated_number(data_number), end=' ')
+				print(
+					self.formated_comment(
+						f'string "{self.data_section[data_number]}"'
+					),
+				)
 
 			elif instruction in (OpCodes.STO, OpCodes.LDV):
 				print(self.opcodes_as_string[instruction], end=' ')
