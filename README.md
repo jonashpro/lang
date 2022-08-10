@@ -8,6 +8,6 @@ $ ./src/lang.py build <file>
 ```
 
 ## TODO
-[ ] - Virtual Machine
-[ ] - Optimizer
+- [ ] Virtual Machine
+- [ ] Optimizer
 
