@@ -1,0 +1,9 @@
+fn main() {
+	let x = 0;
+
+	while (x < 10) {
+		write(x);
+		let x = x + 1;
+	}
+}
+

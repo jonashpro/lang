@@ -1,0 +1,9 @@
+fn main() {
+	hello();
+	write("IN MAIN");
+}
+
+fn hello() {
+	write("IN HELLO");
+}
+

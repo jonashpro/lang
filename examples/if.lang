@@ -1,0 +1,13 @@
+fn main() {
+	if (10 == 10)
+		write("if");
+	
+	else if (10 != 10) {
+		write("else if");
+	}
+
+	else {
+		write("else");
+	}
+}
+

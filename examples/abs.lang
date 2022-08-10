@@ -1,0 +1,15 @@
+fn abs(x) {
+	if (x >= 0)
+		return x;
+	else
+		return x * -1;
+}
+
+fn main() {
+	let x = abs(10);
+	let y = abs(-1);
+
+	write(x);
+	write(y);
+}
+
