@@ -46,6 +46,8 @@ class TokenType:
 	OPERATOR_BTW_XOR = '^'
 	OPERATOR_SEMICOLON = ';'
 	OPERATOR_COMMA = ','
+	OPERATOR_INC = '++'
+	OPERATOR_DEC = '--'
 
 
 class Token:

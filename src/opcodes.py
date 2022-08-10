@@ -30,4 +30,7 @@ class OpCodes:
 	OR  = 25  # or
 	NOT = 26  # not
 	NEG = 27  # negate
+	DUP = 28  # duplicate
+	INC = 29  # increment
+	DEC = 30  # decrement
 

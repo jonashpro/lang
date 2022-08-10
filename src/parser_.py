@@ -328,6 +328,10 @@ class Parser:
 		          |  '-' <factor>
 		          |  '!' <expression>
 		          |  <function_call>
+		          |  '++' <identifier>
+		          |  '--' <identifier>
+		          |  <identifier> '++'
+		          |  <identifier> '--'
 		"""
 
 		# <int> | <float> | <string>
@@ -377,7 +381,9 @@ class Parser:
 
 			return node
 
-		# <identifier> | <function_call>
+		#   <identifier> | <function_call>
+		#                | <identifier> '++'
+		#                | <identifier> '--'
 		elif self.current_token.type == TokenType.TYPE_IDENTIFIER:
 			if self.peek_next_token().type == TokenType.OPERATOR_LPAREN:
 				return self.function_call()
@@ -385,10 +391,42 @@ class Parser:
 			else:
 				position = self.current_token.position
 				name = self.current_token.value
-
 				self.match(TokenType.TYPE_IDENTIFIER)
 
-				return IdentifierNode(position, name)
+				if self.current_token.type == TokenType.OPERATOR_INC:
+					self.match(TokenType.OPERATOR_INC)
+					return IncrementRightNode(position, name)
+
+				elif self.current_token.type == TokenType.OPERATOR_DEC:
+					self.match(TokenType.OPERATOR_DEC)
+					return DecrementRightNode(position, name)
+
+				else:
+					return IdentifierNode(position, name)
+
+		# '++' <identifier>
+		elif self.current_token.type == TokenType.OPERATOR_INC:
+			self.match(TokenType.OPERATOR_INC)
+			node = IncrementLeftNode(
+				self.current_token.position,
+				self.current_token.value,
+			)
+
+			self.match(TokenType.TYPE_IDENTIFIER)
+
+			return node
+
+		# '--' <identifier>
+		elif self.current_token.type == TokenType.OPERATOR_DEC:
+			self.match(TokenType.OPERATOR_DEC)
+			node = DecrementLeftNode(
+				self.current_token.position,
+				self.current_token.value,
+			)
+
+			self.match(TokenType.TYPE_IDENTIFIER)
+
+			return node
 
 		# invalid syntax
 		else:

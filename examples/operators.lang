@@ -1,0 +1,8 @@
+fn main() {
+	let x = 10;
+	write(x++);
+	write(++x);
+	write(--x);
+	write(x--);
+}
+

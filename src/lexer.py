@@ -69,6 +69,8 @@ class Lexer:
 			TokenType.OPERATOR_BTW_XOR,
 			TokenType.OPERATOR_SEMICOLON,
 			TokenType.OPERATOR_COMMA,
+			TokenType.OPERATOR_INC,
+			TokenType.OPERATOR_DEC,
 		]
 
 	def update_position(self):

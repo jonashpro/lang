@@ -42,6 +42,9 @@ class Disassembler:
 			OpCodes.AND: 'and',
 			OpCodes.OR: 'or',
 			OpCodes.NEG: 'neg',
+			OpCodes.DUP: 'dup',
+			OpCodes.INC: 'inc',
+			OpCodes.DEC: 'dec',
 		}
 
 		self.current_address = -1
