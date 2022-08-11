@@ -3,6 +3,8 @@
 
 # This VM is only temporary.
 
+import sys
+
 from code_generator import VM_SIGNATURE
 from opcodes import OpCodes
 
@@ -67,8 +69,9 @@ class VM:
 				self.memory_table[address] = True
 				return address
 
-		print('memory overflow', file=sys.stderr)
-		exit(1)
+			address += 1
+
+		self.panic_error('memory overflow')
 
 	def free(self, address):
 		self.memory_table[address] = False
@@ -105,7 +108,7 @@ class VM:
 	def panic_error(self, error):
 		"""Emit a panic error and exit."""
 
-		print(f'panic: {error}')
+		print(f'panic: {error}', file=sys.stderr)
 		exit(1)
 
 	def protected_run(self):
@@ -120,7 +123,7 @@ class VM:
 	def run(self):
 		while True:
 			instr = self.get_instruction()
-			
+
 			if instr == OpCodes.HLT:
 				break
 
