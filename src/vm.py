@@ -3,6 +3,7 @@
 
 # This VM is only temporary.
 
+import struct
 import sys
 
 from code_generator import VM_SIGNATURE
@@ -102,8 +103,16 @@ class VM:
 
 		return (byte1 * 256 * 256 * 256) \
 		     + (byte2 * 256 * 256      ) \
-			 + (byte3 * 256            ) \
-			 + (byte4                  )
+		     + (byte3 * 256            ) \
+		     + (byte4                  )
+	
+	def get_float(self):
+		bytes_ = []
+
+		for byte in range(8):
+			bytes_.append(self.get_instruction())
+
+		return struct.unpack('!d', bytes(bytes_))[0]
 
 	def panic_error(self, error):
 		"""Emit a panic error and exit."""
@@ -131,7 +140,7 @@ class VM:
 				self.stack.append(self.get_int32())
 
 			elif instr == OpCodes.LDF:
-				raise NotImplementedError
+				self.stack.append(self.get_float())
 
 			elif instr == OpCodes.LDS:
 				self.stack.append(self.data[self.get_int32()])

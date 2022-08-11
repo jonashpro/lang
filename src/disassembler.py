@@ -1,6 +1,11 @@
 # Lang Compiler
 # Author: Jonas
 
+# TODO:
+# - Move disassembler to VM as method
+
+import struct
+
 from code_generator import VM_SIGNATURE
 from opcodes import OpCodes
 
@@ -97,6 +102,14 @@ class Disassembler:
 			+  (byte2 * 256 * 256)        \
 			+  (byte3 * 256)              \
 			+  (byte4)
+
+	def get_float(self):
+		bytes_ = []
+
+		for byte in range(8):
+			bytes_.append(self.get_instruction())
+
+		return struct.unpack('!d', bytes(bytes_))[0]
 
 	def formated_number(self, number):
 		if number < 10:

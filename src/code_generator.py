@@ -1,6 +1,8 @@
 # Lang Compiler
 # Author: Jonas
 
+import struct
+
 from built_in import built_in_functions
 from node import *
 from opcodes import OpCodes
@@ -95,8 +97,12 @@ class CodeGenerator:
 	def emit_float(self, float_, custom_address=None):
 		"""Emit a float number."""
 
-		raise NotImplementedError('emit_float')
-	
+		for byte in struct.pack('!d', float_):
+			self.emit_instruction(byte, custom_address)
+
+			if custom_address is not None:
+				custom_address += 1
+
 	def emit_string(self, string, custom_address=None):
 		"""Emit a string."""
 
@@ -115,7 +121,8 @@ class CodeGenerator:
 			self.emit_int32(node.value)
 
 		elif isinstance(node, FloatNode):
-			raise NotImplementedError
+			self.emit_instruction(OpCodes.LDF)
+			self.emit_float(node.value)
 
 		elif isinstance(node, StringNode):
 			self.emit_instruction(OpCodes.LDS)
