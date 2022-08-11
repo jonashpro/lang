@@ -15,5 +15,11 @@ $ ./src/lang.py run hello.lang
 ```
 
 ## TODO
+- [ ] IR Generator
 - [ ] Optimizer
+- [ ] Pre-Processor
+- [ ] VM (In portable C)
+- [ ] Arrays
+- [ ] Compile time type check
+- [ ] Structs
 
