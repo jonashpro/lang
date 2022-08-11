@@ -1,10 +1,6 @@
 # Lang Compiler
 # Author: Jonas
 
-# TODO:
-# - for loop
-# - do while loop
-
 from error import ExpectedError, InvalidSyntaxError, UnexpectedError
 from node import *
 from token_ import TokenType
