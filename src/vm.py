@@ -210,6 +210,9 @@ class VM:
 			elif instr == OpCodes.DEC:
 				self.stack[-1] -= 1
 
+			elif instr == OpCodes.EXT:
+				exit(self.stack.pop())
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 

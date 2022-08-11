@@ -3,10 +3,13 @@
 
 from opcodes import OpCodes
 
-#                 number of arguments, instruction
-BUILT_IN_WRITE = (1,                   OpCodes.WRT)
+
+def built_in_function(number_of_arguments, instruction):
+	return (number_of_arguments, instruction)
+
 
 built_in_functions = {
-	'write': BUILT_IN_WRITE,
+	'write':   built_in_function(1, OpCodes.WRT),
+	'exit':    built_in_function(1, OpCodes.EXT),
 }
 
