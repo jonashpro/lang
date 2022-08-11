@@ -46,6 +46,13 @@ class Disassembler:
 			OpCodes.INC: 'inc',
 			OpCodes.DEC: 'dec',
 			OpCodes.LET: 'let',
+			OpCodes.BNT: 'bnt',
+			OpCodes.SHL: 'shl',
+			OpCodes.SHR: 'shr',
+			OpCodes.XOR: 'xor',
+			OpCodes.BOR: 'bor',
+			OpCodes.BND: 'bnd',
+			OpCodes.EXT: 'ext'
 		}
 
 		self.current_address = -1

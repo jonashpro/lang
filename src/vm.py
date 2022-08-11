@@ -36,7 +36,18 @@ class VM:
 			OpCodes.GT: lambda a, b: int(a > b),
 			OpCodes.GE: lambda a, b: int(a >= b),
 			OpCodes.AND: lambda a, b: int(a and b),
-			OpCodes.OR: lambda a, b: int(a or b)
+			OpCodes.OR: lambda a, b: int(a or b),
+			OpCodes.XOR: lambda a, b: a ^ b,
+			OpCodes.SHL: lambda a, b: a << b,
+			OpCodes.SHR: lambda a, b: a >> b,
+			OpCodes.BOR: lambda a, b: a | b,
+			OpCodes.BND: lambda a, b: a & b,
+		}
+
+		self.unary_operations = {
+			OpCodes.NOT: lambda a: not a,
+			OpCodes.NEG: lambda a: -a,
+			OpCodes.BNT: lambda a: ~a,
 		}
 	
 	def check_and_remove_signature(self):
@@ -89,6 +100,10 @@ class VM:
 		     + (byte2 * 256 * 256      ) \
 			 + (byte3 * 256            ) \
 			 + (byte4                  )
+
+	def panic_error(self, error):
+		print(f'panic: {error}')
+		exit(1)
 
 	def run(self):
 		while True:
@@ -160,13 +175,16 @@ class VM:
 			elif instr in self.binary_operations:
 				b = self.stack.pop()
 				a = self.stack.pop()
-				self.stack.append(self.binary_operations[instr](a, b))
 
-			elif instr == OpCodes.NEG:
-				self.stack[-1] = -self.stack[-1]
+				try:
+					self.stack.append(self.binary_operations[instr](a, b))
 
-			elif instr == OpCodes.NOT:
-				self.stack[-1] = not self.stack[-1]
+				except Exception as err:
+					self.panic_error(err)
+
+			elif instr in self.unary_operations:
+				a = self.stack.pop()
+				self.stack.append(self.unary_operations[instr](a))
 
 			elif instr == OpCodes.DUP:
 				self.stack.append(self.stack[-1])
@@ -178,6 +196,5 @@ class VM:
 				self.stack[-1] -= 1
 
 			else:
-				print(instr)
-
+				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 

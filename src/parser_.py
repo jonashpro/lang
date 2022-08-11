@@ -277,10 +277,33 @@ class Parser:
 	def expression(self):
 		"""Calls the expression the least precedence."""
 		
-		return self.and_or_expression()
+		return self.bitwise_or_xor_expression()
+
+	def bitwise_or_xor_expression(self):
+		"""Returns a binary expression with '|' or '^'."""
+
+		return self.binary_operation(self.bitwise_and_expression, (
+			TokenType.OPERATOR_BTW_OR,
+			TokenType.OPERATOR_BTW_XOR,
+		))
+	
+	def bitwise_and_expression(self):
+		"""Returns a binary expression with '&'."""
+
+		return self.binary_operation(self.bitwise_shift_expression, (
+			TokenType.OPERATOR_BTW_AND,
+		))
+	
+	def bitwise_shift_expression(self):
+		"""Returns a binary expression with '<<' or '>>'."""
+
+		return self.binary_operation(self.and_or_expression, (
+			TokenType.OPERATOR_BTW_SHL,
+			TokenType.OPERATOR_BTW_SHR,
+		))
 
 	def and_or_expression(self):
-		"""Returns a binary expression with '&&' and '||'."""
+		"""Returns a binary expression with '&&' or '||'."""
 
 		return self.binary_operation(self.comp_expression, (
 			TokenType.OPERATOR_AND,
@@ -289,7 +312,7 @@ class Parser:
 
 	def comp_expression(self):
 		"""Returns a binary expression with '==', '!=', '<', '<=', '>'
-		and '>='."""
+		or '>='."""
 
 		return self.binary_operation(self.add_sub_expression, (
 			TokenType.OPERATOR_EQ,
@@ -301,7 +324,7 @@ class Parser:
 		))
 
 	def add_sub_expression(self):
-		"""Returns a binary expression with '+' and '-'."""
+		"""Returns a binary expression with '+' or '-'."""
 
 		return self.binary_operation(self.mul_div_expression, (
 			TokenType.OPERATOR_PLUS,
@@ -309,7 +332,7 @@ class Parser:
 		))
 	
 	def mul_div_expression(self):
-		"""Returns a binary expression with '*' and '/'."""
+		"""Returns a binary expression with '*' or '/'."""
 
 		return self.binary_operation(self.factor, (
 			TokenType.OPERATOR_ASTERISK,
@@ -332,6 +355,7 @@ class Parser:
 		          |  '--' <identifier>
 		          |  <identifier> '++'
 		          |  <identifier> '--'
+				  |  '~' <factor>
 		"""
 
 		# <int> | <float> | <string>
@@ -427,6 +451,15 @@ class Parser:
 			self.match(TokenType.TYPE_IDENTIFIER)
 
 			return node
+
+		# '~' <factor>
+		elif self.current_token.type == TokenType.OPERATOR_BTW_NOT:
+			position = self.current_token.position
+			operator = self.current_token.type
+
+			self.match(TokenType.OPERATOR_BTW_NOT)
+
+			return UnaryOperationNode(position, operator, self.factor())
 
 		# invalid syntax
 		else:

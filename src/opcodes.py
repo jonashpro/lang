@@ -34,4 +34,11 @@ class OpCodes:
 	INC = 29  # increment
 	DEC = 30  # decrement
 	LET = 31  # let
+	BNT = 32  # bitwise not
+	SHL = 33  # shift left
+	SHR = 34  # shift right
+	XOR = 35  # xor
+	BOR = 36  # bitwise or
+	BND = 37  # bitwise and
+	EXT = 38  # exit
 

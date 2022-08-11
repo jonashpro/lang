@@ -24,6 +24,7 @@ class CodeGenerator:
 		self.unary_instructions = {
 			TokenType.OPERATOR_MINUS: OpCodes.NEG,
 			TokenType.OPERATOR_NOT: OpCodes.NOT,
+			TokenType.OPERATOR_BTW_NOT: OpCodes.BNT,
 		}
 
 		self.binary_instructions = {
@@ -37,6 +38,11 @@ class CodeGenerator:
 			TokenType.OPERATOR_LE: OpCodes.LE,
 			TokenType.OPERATOR_GT: OpCodes.GT,
 			TokenType.OPERATOR_GE: OpCodes.GE,
+			TokenType.OPERATOR_BTW_AND: OpCodes.BND,
+			TokenType.OPERATOR_BTW_OR: OpCodes.BOR,
+			TokenType.OPERATOR_BTW_XOR: OpCodes.XOR,
+			TokenType.OPERATOR_BTW_SHL: OpCodes.SHL,
+			TokenType.OPERATOR_BTW_SHR: OpCodes.SHR,
 		}
 
 		# function: address
@@ -176,6 +182,8 @@ class CodeGenerator:
 			self.functions_address[node.name] = self.current_address
 
 			for argument in node.arguments:
+				self.emit_instruction(OpCodes.LET)
+				self.emit_string(argument.name)
 				self.emit_instruction(OpCodes.STO)
 				self.emit_string(argument.name)
 
