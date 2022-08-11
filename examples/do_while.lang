@@ -1,0 +1,8 @@
+// do while
+
+fn main() {
+	do {
+		write("do while");
+	} while (0);
+}
+

@@ -1,0 +1,6 @@
+// hello world!
+
+fn main() {
+	write("hello world!");
+}
+

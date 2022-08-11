@@ -1,0 +1,18 @@
+// if else
+
+fn main() {
+	let x = 10;
+
+	if (x < 10) {
+		write("x < 10");
+	}
+
+	else if (x > 10) {
+		write("x > 10");
+	}
+
+	else {
+		write("else");
+	}
+}
+

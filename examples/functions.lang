@@ -1,0 +1,16 @@
+// functions
+
+fn hello() {
+	write("fn hello();");
+}
+
+fn main() {
+	hello();
+	write("fn main();");
+	bye();
+}
+
+fn bye() {
+	write("fn bye();");
+}
+
