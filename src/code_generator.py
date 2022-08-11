@@ -276,6 +276,16 @@ class CodeGenerator:
 			self.emit_instruction(OpCodes.STO)
 			self.emit_string(node.name)
 
+
+		elif isinstance(node, DoWhileNode):
+			body_address = self.current_address
+			self.generate_node(node.body)
+
+			self.generate_node(node.condition)
+	
+			self.emit_instruction(OpCodes.JPT)
+			self.emit_int32(body_address)
+
 		else:
 			raise NotImplementedError(node)
 

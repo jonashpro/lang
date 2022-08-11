@@ -185,3 +185,13 @@ class DecrementRightNode(Node):
 	def __repr__(self):
 		return f'{self.name}--'
 
+
+class DoWhileNode(Node):
+	def __init__(self, position, condition, body):
+		super().__init__(position)
+		self.condition = condition
+		self.body = body
+	
+	def __repr__(self):
+		return f'(do {self.body} while {self.condition})'
+

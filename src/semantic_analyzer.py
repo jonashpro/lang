@@ -217,6 +217,20 @@ class SemanticAnalyzer:
 
 			self.call_nodes.append(node)
 
+		elif isinstance(node, DoWhileNode):
+			self.analyze_node(node.body)
+			self.analyze_node(node.condition)
+
+		elif isinstance(node, IntNode) \
+				or isinstance(node, FloatNode) \
+				or isinstance(node, StringNode):
+			
+			# do nothing
+			pass
+
+		else:
+			raise NotImplementedError(type(node))
+
 	def analyze(self):
 		"""Analyze all nodes."""
 

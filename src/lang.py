@@ -101,7 +101,7 @@ def main():
 		file_name = sys.argv[2]
 		code = compile_from_file(file_name)
 		vm = VM(code)
-		vm.run()
+		vm.protected_run()
 
 	else:
 		print(f'unknown option: {option}')

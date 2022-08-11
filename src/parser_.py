@@ -2,7 +2,6 @@
 # Author: Jonas
 
 # TODO:
-# - bitwise expressions
 # - for loop
 # - do while loop
 
@@ -94,6 +93,7 @@ class Parser:
 		             |  <function_call> ';'
 		             |  <return_statement>
 		             |  <assign_statement>
+		             |  <do_while_statement>
 		"""
 
 		if self.current_token.type == TokenType.KEYWORD_LET:
@@ -120,12 +120,33 @@ class Parser:
 		elif self.current_token.type == TokenType.KEYWORD_RETURN:
 			return self.return_statement()
 
+		elif self.current_token.type == TokenType.KEYWORD_DO:
+			return self.do_while_statement()
+
 		else:
 			error = UnexpectedError(
 				self.current_token.position,
 				self.current_token.value,
 			)
 			error.show_error_and_abort()
+
+	def do_while_statement(self):
+		"""
+		<do_while_statement> ::=
+			'do'
+				<statement>
+			'while' <condition> ';'
+		"""
+
+		position = self.current_token.position
+
+		self.match(TokenType.KEYWORD_DO)
+		body = self.statement()
+		self.match(TokenType.KEYWORD_WHILE)
+		condition = self.condition()
+		self.match(TokenType.OPERATOR_SEMICOLON)
+
+		return DoWhileNode(position, condition, body)
 
 	def assign_statement(self):
 		"""
@@ -222,7 +243,7 @@ class Parser:
 	def fn_statement(self):
 		"""
 		<fn_statement> ::=
-			'fn' <identifier> '(' (<identifier> (',' <identifier>)*)?
+			'fn' <identifier> '('(<identifier>(',' <identifier>)*)?')'
 				<statement>
 		"""
 

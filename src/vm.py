@@ -42,6 +42,7 @@ class VM:
 			OpCodes.SHR: lambda a, b: a >> b,
 			OpCodes.BOR: lambda a, b: a | b,
 			OpCodes.BND: lambda a, b: a & b,
+			OpCodes.NE: lambda a, b: a != b,
 		}
 
 		self.unary_operations = {
@@ -102,8 +103,19 @@ class VM:
 			 + (byte4                  )
 
 	def panic_error(self, error):
+		"""Emit a panic error and exit."""
+
 		print(f'panic: {error}')
 		exit(1)
+
+	def protected_run(self):
+		"""Runs with exceptions handling."""
+
+		try:
+			self.run()
+
+		except (KeyboardInterrupt, EOFError):
+			exit(0)
 
 	def run(self):
 		while True:
