@@ -1,6 +1,0 @@
-// hello world program
-
-fn main() {
-	write("hello world!");
-}
-
