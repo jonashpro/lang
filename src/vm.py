@@ -420,7 +420,10 @@ class VM:
 				print(self.get_int32())
 
 			elif instr == OpCodes.LDS:
-				print('"' + self.data[self.get_int32()] + '"')
+				string = self.data[self.get_int32()]
+				string = string.replace('\n', '\\n')
+				string = string.replace('\r', '\\r')
+				print('"' + string + '"')
 
 			elif instr == OpCodes.LDF:
 				print(self.get_float())
