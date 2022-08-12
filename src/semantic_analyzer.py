@@ -225,6 +225,14 @@ class SemanticAnalyzer:
 			# do nothing
 			pass
 
+		elif isinstance(node, ListNode):
+			for value in node.value:
+				self.analyze_node(value)
+
+		elif isinstance(node, ListAccessNode):
+			self.analyze_node(node.list)
+			self.analyze_node(node.index)
+
 		else:
 			raise NotImplementedError(type(node))
 

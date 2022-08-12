@@ -1,0 +1,16 @@
+// list
+
+fn main() {
+	let numbers = [0, 1, 2, 3, 4];
+
+	append(numbers, 5);
+	pop(numbers, 0);
+
+	let i = 0;
+
+	while (i < length(numbers)) {
+		write(numbers[i]);
+		i += 1;
+	}
+}
+

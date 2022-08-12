@@ -129,6 +129,14 @@ class VM:
 		except (KeyboardInterrupt, EOFError):
 			exit(0)
 
+	def get_list(self, number_of_values):
+		list_ = []
+
+		for _ in range(number_of_values):
+			list_.append(self.stack.pop())
+
+		return list_
+
 	def run(self):
 		while True:
 			instr = self.get_instruction()
@@ -144,6 +152,9 @@ class VM:
 
 			elif instr == OpCodes.LDS:
 				self.stack.append(self.data[self.get_int32()])
+
+			elif instr == OpCodes.LDL:
+				self.stack.append(self.get_list(self.get_int32()))
 
 			elif instr == OpCodes.JMP:
 				self.pc = self.get_int32()
@@ -242,6 +253,29 @@ class VM:
 			elif instr == OpCodes.POP:
 				self.stack.pop()
 
+			elif instr == OpCodes.GET:
+				index = self.stack.pop()
+				list_ = self.stack.pop()
+
+				try:
+					self.stack.append(list_[index])
+
+				except IndexError:
+					self.panic_error('invalid index')
+
+			elif instr == OpCodes.APD:
+				list_ = self.stack.pop()
+				value = self.stack.pop()
+				list_.append(value)
+
+			elif instr == OpCodes.LPP:
+				list_ = self.stack.pop()
+				index = self.stack.pop()
+				list_.pop(index)
+
+			elif instr == OpCodes.LEN:
+				self.stack.append(len(self.stack.pop()))
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 
@@ -287,6 +321,11 @@ class VM:
 			OpCodes.BND: 'bnd',
 			OpCodes.EXT: 'ext',
 			OpCodes.POP: 'pop',
+			OpCodes.LDL: 'ldl',
+			OpCodes.GET: 'get',
+			OpCodes.APD: 'apd',
+			OpCodes.LPP: 'lpp',
+			OpCodes.LEN: 'len',
 		}
 	
 		while self.pc < len(self.code):
@@ -315,6 +354,9 @@ class VM:
 
 			elif instr == OpCodes.LDF:
 				print(self.get_float())
+
+			elif instr == OpCodes.LDL:
+				print(self.get_int32())
 
 			elif instr in (OpCodes.STO, OpCodes.LDV, OpCodes.LET):
 				print(self.data[self.get_int32()])

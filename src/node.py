@@ -159,3 +159,18 @@ class DoWhileNode(Node):
 	def __repr__(self):
 		return f'(do {self.body} while {self.condition})'
 
+
+class ListNode(LiteralNode):
+	def __init__(self, position, value):
+		super().__init__(position, value)
+
+
+class ListAccessNode(Node):
+	def __init__(self, position, list_, index):
+		super().__init__(position)
+		self.list = list_
+		self.index = index
+	
+	def __repr__(self):
+		return f'(access {self.list} {self.index})'
+

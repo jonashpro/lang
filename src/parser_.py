@@ -404,13 +404,14 @@ class Parser:
 		          |  <float>
 		          |  <string>
 		          |  <identifier>
-		          |  <function-call>
 		          |  '(' <expression> ')'
 		          |  '+' <factor>
 		          |  '-' <factor>
 		          |  '!' <expression>
 		          |  <function_call>
-				  |  '~' <factor>
+		          |  '~' <factor>
+		          |  <list_declaration>
+		          |  <list_access>
 		"""
 
 		# <int> | <float> | <string>
@@ -460,10 +461,13 @@ class Parser:
 
 			return node
 
-		# <identifier> | <function_call>
+		# <identifier> | <function_call> | <list_access>
 		elif self.current_token.type == TokenType.TYPE_IDENTIFIER:
 			if self.peek_next_token().type == TokenType.OPERATOR_LPAREN:
 				return self.function_call()
+
+			elif self.peek_next_token().type == TokenType.OPERATOR_LBRACKET:
+				return self.list_access()
 
 			else:
 				position = self.current_token.position
@@ -481,6 +485,10 @@ class Parser:
 
 			return UnaryOperationNode(position, operator, self.factor())
 
+		# <list_declaration>
+		elif self.current_token.type == TokenType.OPERATOR_LBRACKET:
+			return self.list_declaration()
+
 		# invalid syntax
 		else:
 			error = InvalidSyntaxError(
@@ -489,6 +497,29 @@ class Parser:
 			)
 
 			error.show_error_and_abort()
+
+	def list_declaration(self):
+		"""
+		<list_declaration> ::= '['(<expression>(',' <expression>)*)?']'
+		"""
+
+		position = self.current_token.position
+		
+		self.match(TokenType.OPERATOR_LBRACKET)
+		values = []
+
+		while self.current_token.type != TokenType.OPERATOR_RBRACKET:
+			values.append(self.expression())
+
+			if self.current_token.type == TokenType.OPERATOR_COMMA:
+				self.match(TokenType.OPERATOR_COMMA)
+
+			else:
+				break
+
+		self.match(TokenType.OPERATOR_RBRACKET)
+
+		return ListNode(position, values)
 
 	def function_call(self):
 		"""
@@ -515,6 +546,28 @@ class Parser:
 		self.match(TokenType.OPERATOR_RPAREN)
 
 		return CallNode(position, name, arguments)
+
+	def list_access(self):
+		"""
+		<list_access> ::= <identifier> ('[' <expression> ']')+
+		"""
+
+		position = self.current_token.position
+
+		name = self.current_token.value
+		self.match(TokenType.TYPE_IDENTIFIER)
+		
+		node = IdentifierNode(position, name)
+
+		while self.current_token.type == TokenType.OPERATOR_LBRACKET:
+			position = self.current_token.position
+
+			self.match(TokenType.OPERATOR_LBRACKET)
+			index = self.expression()
+			self.match(TokenType.OPERATOR_RBRACKET)
+			node = ListAccessNode(position, node, index)
+
+		return node
 
 	def binary_operation(self, next_precedence, operators):
 		"""

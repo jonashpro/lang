@@ -73,6 +73,8 @@ class Lexer:
 			TokenType.OPERATOR_MINUS_ASSIGN,
 			TokenType.OPERATOR_ASTERISK_ASSIGN,
 			TokenType.OPERATOR_SLASH_ASSIGN,
+			TokenType.OPERATOR_LBRACKET,
+			TokenType.OPERATOR_RBRACKET,
 		]
 
 	def update_position(self):

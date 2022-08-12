@@ -19,7 +19,6 @@ $ ./src/lang.py run hello.lang
 - [ ] Optimizer
 - [ ] Pre-Processor
 - [ ] VM (In portable C)
-- [ ] Arrays
 - [ ] Compile time type check
 - [ ] Structs
 

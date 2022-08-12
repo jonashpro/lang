@@ -262,6 +262,21 @@ class CodeGenerator:
 			self.emit_instruction(OpCodes.JPT)
 			self.emit_int32(body_address)
 
+		elif isinstance(node, ListNode):
+			node.value.reverse()
+
+			for value in node.value:
+				self.generate_node(value)
+
+			self.emit_instruction(OpCodes.LDL)
+			self.emit_int32(len(node.value))
+
+		elif isinstance(node, ListAccessNode):
+			self.generate_node(node.list)
+			self.generate_node(node.index)
+
+			self.emit_instruction(OpCodes.GET)
+
 		else:
 			raise NotImplementedError(node)
 

@@ -3,15 +3,15 @@
 
 class OpCodes:
 	HLT =  0  # halt
-	LDI =  1  # load int
-	LDF =  2  # load float
-	LDS =  3  # load string
-	STO =  4  # store
+	LDI =  1  # load int <value>
+	LDF =  2  # load float <value>
+	LDS =  3  # load string <value>
+	STO =  4  # store <name>
 	LDV =  5  # load variable
-	JMP =  6  # jump
-	JPT =  7  # jump true
-	JPF =  8  # jump false
-	CAL =  9  # call
+	JMP =  6  # jump <address>
+	JPT =  7  # jump true <address>
+	JPF =  8  # jump false <address>
+	CAL =  9  # call <address>
 	RET = 10  # return
 	LDN = 11  # load nil
 	NOP = 12  # noop
@@ -33,7 +33,7 @@ class OpCodes:
 	DUP = 28  # duplicate
 	INC = 29  # increment
 	DEC = 30  # decrement
-	LET = 31  # let
+	LET = 31  # let <name>
 	BNT = 32  # bitwise not
 	SHL = 33  # shift left
 	SHR = 34  # shift right
@@ -42,4 +42,9 @@ class OpCodes:
 	BND = 37  # bitwise and
 	EXT = 38  # exit
 	POP = 39  # pop
+	LDL = 40  # load list <number of values>
+	GET = 41  # get
+	APD = 42  # append
+	LPP = 43  # list pop
+	LEN = 44  # length
 
