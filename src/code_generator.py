@@ -207,7 +207,6 @@ class CodeGenerator:
 				self.emit_instruction(OpCodes.RET)
 
 			self.emit_int32(self.current_address, jump_to_end_address)
-			self.emit_instruction(OpCodes.NOP)  # end of function
 
 		elif isinstance(node, IdentifierNode):
 			self.emit_instruction(OpCodes.LDV)
@@ -226,7 +225,6 @@ class CodeGenerator:
 			self.emit_int32(condition_address)
 
 			self.emit_int32(self.current_address, jump_to_end_address)
-			self.emit_instruction(OpCodes.NOP)
 
 		elif isinstance(node, IfNode):
 			self.generate_node(node.condition)
@@ -247,11 +245,9 @@ class CodeGenerator:
 				self.generate_node(node.else_body)
 
 				self.emit_int32(self.current_address, jump_to_end_address)
-				self.emit_instruction(OpCodes.NOP)
 
 			else:
 				self.emit_int32(self.current_address, jump_false_address)
-				self.emit_instruction(OpCodes.NOP)
 
 		elif isinstance(node, ReturnNode):
 			self.generate_node(node.value)
