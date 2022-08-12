@@ -49,4 +49,9 @@ class OpCodes:
 	LEN = 44  # length
 	CPY = 45  # copy
 	TYP = 46  # type
+	SET = 47  # set
+	FOP = 48  # file open
+	FWT = 49  # file write
+	FRD = 50  # file read
+	FCL = 51  # file close
 

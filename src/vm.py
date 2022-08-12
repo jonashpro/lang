@@ -296,6 +296,30 @@ class VM:
 
 				self.stack.append(typ)
 
+			elif instr == OpCodes.SET:
+				list_ = self.stack.pop()
+				index = self.stack.pop()
+				value = self.stack.pop()
+				list_[index] = value
+
+			elif instr == OpCodes.FOP:
+				file_name = self.stack.pop()
+				open_type = self.stack.pop()
+				self.stack.append(open(file_name, open_type))
+
+			elif instr == OpCodes.FWT:
+				file = self.stack.pop()
+				text = self.stack.pop()
+				file.write(text)
+
+			elif instr == OpCodes.FRD:
+				file = self.stack.pop()
+				self.stack.append(file.read())
+
+			elif instr == OpCodes.FCL:
+				file = self.stack.pop()
+				file.close()
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 
@@ -348,6 +372,11 @@ class VM:
 			OpCodes.LEN: 'len',
 			OpCodes.CPY: 'cpy',
 			OpCodes.TYP: 'typ',
+			OpCodes.SET: 'set',
+			OpCodes.FOP: 'fop',
+			OpCodes.FWT: 'fwt',
+			OpCodes.FRD: 'frd',
+			OpCodes.FCL: 'fcl',
 		}
 	
 		while self.pc < len(self.code):

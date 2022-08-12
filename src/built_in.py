@@ -16,5 +16,10 @@ built_in_functions = {
 	'length':  built_in_function(1, OpCodes.LEN),  # (list)
 	'copy':    built_in_function(1, OpCodes.CPY),  # (list)
 	'type':    built_in_function(1, OpCodes.TYP),  # (value)
+	'set':     built_in_function(3, OpCodes.SET),  # (list,index,value)
+	'fopen':   built_in_function(2, OpCodes.FOP),  # (filename, type)
+	'fwrite':  built_in_function(2, OpCodes.FWT),  # (file, text)
+	'fread':   built_in_function(1, OpCodes.FRD),  # (file)
+	'fclose':  built_in_function(1, OpCodes.FCL),  # (file)
 }
 
