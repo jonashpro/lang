@@ -276,6 +276,26 @@ class VM:
 			elif instr == OpCodes.LEN:
 				self.stack.append(len(self.stack.pop()))
 
+			elif instr == OpCodes.CPY:
+				self.stack.append(self.stack.pop().copy())
+
+			elif instr == OpCodes.TYP:
+				value = self.stack.pop()
+
+				if isinstance(value, str):
+					typ = 'string'
+
+				elif isinstance(value, int):
+					typ = 'int'
+
+				elif isinstance(value, float):
+					typ = 'float'
+
+				elif isinstance(value, list):
+					typ = 'list'
+
+				self.stack.append(typ)
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 
@@ -326,6 +346,8 @@ class VM:
 			OpCodes.APD: 'apd',
 			OpCodes.LPP: 'lpp',
 			OpCodes.LEN: 'len',
+			OpCodes.CPY: 'cpy',
+			OpCodes.TYP: 'typ',
 		}
 	
 		while self.pc < len(self.code):

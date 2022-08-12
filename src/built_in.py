@@ -14,5 +14,7 @@ built_in_functions = {
 	'append':  built_in_function(2, OpCodes.APD),  # (list, value)
 	'pop':     built_in_function(2, OpCodes.LPP),  # (list, index)
 	'length':  built_in_function(1, OpCodes.LEN),  # (list)
+	'copy':    built_in_function(1, OpCodes.CPY),  # (list)
+	'type':    built_in_function(1, OpCodes.TYP),  # (value)
 }
 

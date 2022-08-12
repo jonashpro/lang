@@ -47,4 +47,6 @@ class OpCodes:
 	APD = 42  # append
 	LPP = 43  # list pop
 	LEN = 44  # length
+	CPY = 45  # copy
+	TYP = 46  # type
 
