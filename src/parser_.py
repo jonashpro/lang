@@ -22,6 +22,15 @@ class Parser:
 			TokenType.TYPE_STRING: StringNode,
 		}
 
+		# +=, -=, *=, /=
+		# example: key: +=, value: +
+		self.assign_operators = {
+			TokenType.OPERATOR_PLUS_ASSIGN: TokenType.OPERATOR_PLUS,
+			TokenType.OPERATOR_MINUS_ASSIGN: TokenType.OPERATOR_MINUS,
+			TokenType.OPERATOR_ASTERISK_ASSIGN: TokenType.OPERATOR_ASTERISK,
+			TokenType.OPERATOR_SLASH_ASSIGN: TokenType.OPERATOR_SLASH,
+		}
+
 	def update_current_token(self):
 		"""Update the current token."""
 
@@ -146,17 +155,37 @@ class Parser:
 
 	def assign_statement(self):
 		"""
-		<assign_statement> ::= <identifier> '=' <expression> ';'
+		<assign_statement> ::=
+			<identifier> ('=' | '+= ' | '-=' | '*=' | '/=')
+				<expression> ';'
 		"""
 
 		position = self.current_token.position
 
 		name = self.current_token.value
 		self.match(TokenType.TYPE_IDENTIFIER)
-		self.match(TokenType.OPERATOR_ASSIGN)
-		value = self.expression()
-		self.match(TokenType.OPERATOR_SEMICOLON)
 
+		if self.current_token.type == TokenType.OPERATOR_ASSIGN:
+			self.match(TokenType.OPERATOR_ASSIGN)
+			value = self.expression()
+
+		# +=, -=, *=, /=
+		elif self.current_token.type in self.assign_operators:
+			operator = self.assign_operators[self.current_token.type]
+			self.match(self.current_token.type)
+		
+			value = BinaryOperationNode(
+				position,
+				operator,
+				IdentifierNode(position, name),
+				self.expression(),
+			)
+
+		else:
+			error = ExpectedError(position, '= += -= *= or /=')
+			error.show_error_and_abort()
+		
+		self.match(TokenType.OPERATOR_SEMICOLON)
 		return AssignNode(position, name, value)
 
 	def return_statement(self):
@@ -368,10 +397,6 @@ class Parser:
 		          |  '-' <factor>
 		          |  '!' <expression>
 		          |  <function_call>
-		          |  '++' <identifier>
-		          |  '--' <identifier>
-		          |  <identifier> '++'
-		          |  <identifier> '--'
 				  |  '~' <factor>
 		"""
 
@@ -422,9 +447,7 @@ class Parser:
 
 			return node
 
-		#   <identifier> | <function_call>
-		#                | <identifier> '++'
-		#                | <identifier> '--'
+		# <identifier> | <function_call>
 		elif self.current_token.type == TokenType.TYPE_IDENTIFIER:
 			if self.peek_next_token().type == TokenType.OPERATOR_LPAREN:
 				return self.function_call()
@@ -434,40 +457,7 @@ class Parser:
 				name = self.current_token.value
 				self.match(TokenType.TYPE_IDENTIFIER)
 
-				if self.current_token.type == TokenType.OPERATOR_INC:
-					self.match(TokenType.OPERATOR_INC)
-					return IncrementRightNode(position, name)
-
-				elif self.current_token.type == TokenType.OPERATOR_DEC:
-					self.match(TokenType.OPERATOR_DEC)
-					return DecrementRightNode(position, name)
-
-				else:
-					return IdentifierNode(position, name)
-
-		# '++' <identifier>
-		elif self.current_token.type == TokenType.OPERATOR_INC:
-			self.match(TokenType.OPERATOR_INC)
-			node = IncrementLeftNode(
-				self.current_token.position,
-				self.current_token.value,
-			)
-
-			self.match(TokenType.TYPE_IDENTIFIER)
-
-			return node
-
-		# '--' <identifier>
-		elif self.current_token.type == TokenType.OPERATOR_DEC:
-			self.match(TokenType.OPERATOR_DEC)
-			node = DecrementLeftNode(
-				self.current_token.position,
-				self.current_token.value,
-			)
-
-			self.match(TokenType.TYPE_IDENTIFIER)
-
-			return node
+				return IdentifierNode(position, name)
 
 		# '~' <factor>
 		elif self.current_token.type == TokenType.OPERATOR_BTW_NOT:
