@@ -323,7 +323,7 @@ class CodeGenerator:
 		self.emit_int32(self.functions_address['main'])
 
 		# emit a halt instruction
-		self.emit_instruction(OpCodes.HLT)
+		self.emit_instruction(OpCodes.EXT)
 
 		# link all addresses
 		self.link_addresses()
