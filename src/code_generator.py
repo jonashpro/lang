@@ -3,7 +3,7 @@
 
 import struct
 
-from built_in import built_in_functions
+from built_in import built_in_functions, built_in_variables
 from node import *
 from opcodes import OpCodes
 from token_ import TokenType

@@ -1,7 +1,7 @@
 # Lang Compiler
 # Author: Jonas
 
-from built_in import built_in_functions
+from built_in import built_in_functions, built_in_variables
 from error import UndefinedError
 from error import VariableIsNotCallableError
 from error import WrongNumberOfArgumentsError
@@ -130,7 +130,10 @@ class SemanticAnalyzer:
 			)
 
 		elif isinstance(node, IdentifierNode):
-			if not self.variable_exists_in_the_current_scope(node.name):
+			if node.name in built_in_variables:
+				return
+
+			elif not self.variable_exists_in_the_current_scope(node.name):
 				error = UndefinedError(node.position, node.name)
 				error.show_error_and_abort()
 

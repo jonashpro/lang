@@ -1,6 +1,8 @@
 # Lang Compiler
 # Author: Jonas
 
+import sys
+
 from opcodes import OpCodes
 
 
@@ -21,5 +23,12 @@ built_in_functions = {
 	'fwrite':  built_in_function(2, OpCodes.FWT),  # (file, text)
 	'fread':   built_in_function(1, OpCodes.FRD),  # (file)
 	'fclose':  built_in_function(1, OpCodes.FCL),  # (file)
+}
+
+
+built_in_variables = {
+	'stdout': sys.stdout,
+	'stdin': sys.stdin,
+	'stderr': sys.stderr,
 }
 

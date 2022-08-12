@@ -6,6 +6,7 @@
 import struct
 import sys
 
+from built_in import built_in_variables
 from code_generator import VM_SIGNATURE
 from opcodes import OpCodes
 
@@ -52,6 +53,12 @@ class VM:
 			OpCodes.NOT: lambda a: not a,
 			OpCodes.NEG: lambda a: -a,
 			OpCodes.BNT: lambda a: ~a,
+		}
+
+		self.files = {
+			'stdout': sys.stdout,
+			'stdin': sys.stdin,
+			'stderr': sys.stderr,
 		}
 	
 	def check_and_remove_signature(self):
@@ -222,7 +229,11 @@ class VM:
 
 			elif instr == OpCodes.LDV:
 				name = self.get_int32()
-				self.stack.append(self.memory[self.variables[-1][name]])
+
+				if self.data[name] in built_in_variables:
+					self.stack.append(built_in_variables[self.data[name]])
+				else:
+					self.stack.append(self.memory[self.variables[-1][name]])
 
 			elif instr in self.binary_operations:
 				b = self.stack.pop()
@@ -293,6 +304,9 @@ class VM:
 
 				elif isinstance(value, list):
 					typ = 'list'
+
+				else:
+					typ = type(value)
 
 				self.stack.append(typ)
 
