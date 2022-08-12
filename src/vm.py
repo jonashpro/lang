@@ -292,10 +292,11 @@ class VM:
 		while self.pc < len(self.code):
 			instr = self.get_instruction()
 
-			if self.pc < 10:
-				pc_as_str = f' {self.pc}'
+			pc = self.pc - 1  # pc points to the next instruction
+			if pc < 10:
+				pc_as_str = f' {pc}'
 			else:
-				pc_as_str = f'{self.pc}'
+				pc_as_str = f'{pc}'
 
 			print(f' {pc_as_str}: {opcodes_as_string[instr]} ', end='')
 
