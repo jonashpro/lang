@@ -5,7 +5,7 @@ if exists("b:current_syntax")
 	finish
 endif
 
-syntax keyword langKeywords fn do while if else return let
+syntax keyword langKeywords fn do while if else return let include
 syntax region langComment start="//" end="$"
 syntax region langString start=/\v"/ end=/\v"/ skip=/\v\\./
 syntax match langNumber "\<[0-9]\+\>"

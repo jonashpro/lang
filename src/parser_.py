@@ -1,12 +1,18 @@
 # Lang Compiler
 # Author: Jonas
 
+import os
+
 from error import ExpectedError
 from error import InvalidSyntaxError
 from error import UnexpectedError
 from error import UnreachableStatementError
+from error import FileNotFoundError_
+from lexer import Lexer
 from node import *
 from token_ import TokenType
+
+STDLIB_PATH = '/usr/lib/lang/'
 
 
 class Parser:
@@ -69,13 +75,18 @@ class Parser:
 		"""Returns an AST."""
 
 		while self.current_token.type != TokenType.TYPE_EOF:
-			self.ast.append(self.declaration())
+			node = self.declaration()
+
+			if node is not None:
+				self.ast.append(node)
 
 		return self.ast
 	
 	def declaration(self):
 		""""
-		<declaration> ::= <fn_statement> | <let_statement>
+		<declaration> ::= <fn_statement>
+		               |  <let_statement>
+		               |  <include_statement>
 		"""
 
 		if self.current_token.type == TokenType.KEYWORD_LET:
@@ -83,7 +94,10 @@ class Parser:
 
 		elif self.current_token.type == TokenType.KEYWORD_FN:
 			return self.fn_statement()
-	
+
+		elif self.current_token.type == TokenType.KEYWORD_INCLUDE:
+			self.include_statement()
+
 		else:
 			error = UnexpectedError(
 				self.current_token.position,
@@ -91,6 +105,48 @@ class Parser:
 			)
 
 			error.show_error_and_abort()
+
+	def include_statement(self):
+		"""
+		;; include does not return a node, it just adds in ast the
+		;; nodes of included file
+
+		<include_statement> ::= 'include' 'std'? <string> ';'
+		"""
+
+		std = False
+
+		position = self.current_token.position
+
+		self.match(TokenType.KEYWORD_INCLUDE)
+
+		if self.current_token.type == TokenType.TYPE_IDENTIFIER \
+				and self.current_token.value == 'std':
+
+			self.match(TokenType.TYPE_IDENTIFIER)
+			std = True
+
+		path = self.current_token.value
+		self.match(TokenType.TYPE_STRING)
+		self.match(TokenType.OPERATOR_SEMICOLON)
+
+		if std:
+			path = STDLIB_PATH + path
+
+		if not os.path.isfile(path):
+			error = FileNotFoundError_(position, path)
+			error.show_error_and_abort()
+
+		with open(path, 'r') as f:
+			source = f.read()
+
+		lexer = Lexer(path, source)
+		tokens = lexer.lex()
+
+		parser = Parser(tokens)
+		ast = parser.parse()
+
+		self.ast += ast
 
 	def statement(self):
 		"""

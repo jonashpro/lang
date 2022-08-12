@@ -40,6 +40,7 @@ class Lexer:
 			TokenType.KEYWORD_RETURN,
 			TokenType.KEYWORD_BREAK,
 			TokenType.KEYWORD_CONTINUE,
+			TokenType.KEYWORD_INCLUDE,
 		]
 
 		self.operators = [

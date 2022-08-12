@@ -19,6 +19,7 @@ class TokenType:
 	KEYWORD_RETURN = 'return'
 	KEYWORD_BREAK = 'break'
 	KEYWORD_CONTINUE = 'continue'
+	KEYWORD_INCLUDE = 'include'
 
 	OPERATOR_PLUS = '+'
 	OPERATOR_MINUS = '-'

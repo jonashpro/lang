@@ -87,3 +87,8 @@ class UnreachableStatementError(Error):
 	def __init__(self, position):
 		super().__init__(position, ERROR, 'unreachable statement')
 
+
+class FileNotFoundError_(Error):
+	def __init__(self, position, file_name):
+		super().__init__(position, ERROR, f'file not found: "{file_name}"')
+
