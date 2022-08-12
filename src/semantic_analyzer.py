@@ -120,7 +120,9 @@ class SemanticAnalyzer:
 				error = RedeclarationError(node.position, node.name)
 				error.show_error_and_abort()
 
-			self.analyze_node(node.value)
+			if node.value:
+				self.analyze_node(node.value)
+
 			self.add_variable(
 				node.position,
 				node.name,
