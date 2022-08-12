@@ -57,7 +57,8 @@ class Disassembler:
 			OpCodes.XOR: 'xor',
 			OpCodes.BOR: 'bor',
 			OpCodes.BND: 'bnd',
-			OpCodes.EXT: 'ext'
+			OpCodes.EXT: 'ext',
+			OpCodes.POP: 'pop',
 		}
 
 		self.current_address = -1
@@ -166,6 +167,11 @@ class Disassembler:
 						f'string "{self.data_section[data_number]}"'
 					),
 				)
+
+			elif instruction == OpCodes.LDF:
+				print(self.opcodes_as_string[instruction], end=' ')
+				float_ = self.get_float()
+				print(self.formated_number(float_))
 
 			elif instruction in (OpCodes.STO, OpCodes.LDV, OpCodes.LET):
 				print(self.opcodes_as_string[instruction], end=' ')

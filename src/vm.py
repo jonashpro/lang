@@ -222,6 +222,9 @@ class VM:
 			elif instr == OpCodes.EXT:
 				exit(self.stack.pop())
 
+			elif instr == OpCodes.POP:
+				self.stack.pop()
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 

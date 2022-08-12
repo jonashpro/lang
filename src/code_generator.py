@@ -113,8 +113,12 @@ class CodeGenerator:
 			self.data_section.append(string)
 			self.emit_int32(len(self.data_section) - 1, custom_address)
 
-	def generate_node(self, node):
-		"""Generate the code of a node."""
+	def generate_node(self, node, preserve_function_return=True):
+		"""Generate the code of a node.
+
+		:param preserve_function_return = if is False, pop function
+		return, because is unecessary
+		"""
 
 		if isinstance(node, IntNode):
 			self.emit_instruction(OpCodes.LDI)
@@ -144,7 +148,7 @@ class CodeGenerator:
 
 		elif isinstance(node, BlockNode):
 			for statement in node.body:
-				self.generate_node(statement)
+				self.generate_node(statement, False)
 
 		elif isinstance(node, LetNode) or isinstance(node, AssignNode):
 			if isinstance(node, LetNode):
@@ -180,6 +184,9 @@ class CodeGenerator:
 			else:
 				self.address_to_link[self.current_address] = node.name
 				self.emit_int32(0)  # temporary address
+
+			if not preserve_function_return:
+				self.emit_instruction(OpCodes.POP)
 
 		elif isinstance(node, FnNode):
 			self.emit_instruction(OpCodes.JMP)
@@ -309,7 +316,7 @@ class CodeGenerator:
 		"""Generate all code."""
 
 		while self.current_node:
-			self.generate_node(self.current_node)
+			self.generate_node(self.current_node, False)
 			self.update_current_node()
 
 		# call the entry point

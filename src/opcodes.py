@@ -41,4 +41,5 @@ class OpCodes:
 	BOR = 36  # bitwise or
 	BND = 37  # bitwise and
 	EXT = 38  # exit
+	POP = 39  # pop
 
