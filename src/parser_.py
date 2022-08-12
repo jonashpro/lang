@@ -1,7 +1,10 @@
 # Lang Compiler
 # Author: Jonas
 
-from error import ExpectedError, InvalidSyntaxError, UnexpectedError
+from error import ExpectedError
+from error import InvalidSyntaxError
+from error import UnexpectedError
+from error import UnreachableStatementError
 from node import *
 from token_ import TokenType
 
@@ -259,7 +262,17 @@ class Parser:
 		body = []
 
 		while self.current_token.type != TokenType.OPERATOR_RBRACE:
-			body.append(self.statement())
+			node = self.statement()
+			body.append(node)
+
+			if isinstance(node, ReturnNode):
+				# return 0;
+				# another statement
+				if self.current_token.type != TokenType.OPERATOR_RBRACE:
+					error = UnreachableStatementError(
+						self.current_token.position
+					)
+					error.show_error_and_abort()
 
 		self.match(TokenType.OPERATOR_RBRACE)
 

@@ -82,3 +82,8 @@ class RedeclarationError(Error):
 	def __init__(self, position, name):
 		super().__init__(position, ERROR, f'redeclaration of {name}')
 
+
+class UnreachableStatementError(Error):
+	def __init__(self, position):
+		super().__init__(position, ERROR, 'unreachable statement')
+
