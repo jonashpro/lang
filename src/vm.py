@@ -339,6 +339,10 @@ class VM:
 				file = self.stack.pop()
 				file.close()
 
+			elif instr == OpCodes.FRL:
+				file = self.stack.pop()
+				self.stack.append(file.readline())
+
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 
@@ -396,6 +400,7 @@ class VM:
 			OpCodes.FWT: 'fwt',
 			OpCodes.FRD: 'frd',
 			OpCodes.FCL: 'fcl',
+			OpCodes.FRL: 'frl',
 		}
 	
 		while self.pc < len(self.code):

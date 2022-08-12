@@ -23,6 +23,7 @@ built_in_functions = {
 	'fwrite':  built_in_function(2, OpCodes.FWT),  # (file, text)
 	'fread':   built_in_function(1, OpCodes.FRD),  # (file)
 	'fclose':  built_in_function(1, OpCodes.FCL),  # (file)
+	'freadln': built_in_function(1, OpCodes.FRL),  # (file)
 }
 
 
