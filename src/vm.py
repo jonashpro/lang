@@ -305,7 +305,12 @@ class VM:
 			elif instr == OpCodes.FOP:
 				file_name = self.stack.pop()
 				open_type = self.stack.pop()
-				self.stack.append(open(file_name, open_type))
+
+				try:
+					self.stack.append(open(file_name, open_type))
+
+				except FileNotFoundError:
+					self.stack.append(None)
 
 			elif instr == OpCodes.FWT:
 				file = self.stack.pop()
