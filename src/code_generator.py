@@ -202,7 +202,9 @@ class CodeGenerator:
 				self.emit_string(argument.name)
 
 			self.generate_node(node.body)
-			self.emit_instruction(OpCodes.RET)
+
+			if self.code_section[-1] != OpCodes.RET:
+				self.emit_instruction(OpCodes.RET)
 
 			self.emit_int32(self.current_address, jump_to_end_address)
 			self.emit_instruction(OpCodes.NOP)  # end of function
