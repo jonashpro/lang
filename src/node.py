@@ -150,42 +150,6 @@ class AssignNode(Node):
 		return f'(= {self.name} {self.value})'
 
 
-class IncrementLeftNode(Node):
-	def __init__(self, position, name):
-		super().__init__(position)
-		self.name = name
-	
-	def __repr__(self):
-		return f'++{self.name}'
-
-
-class IncrementRightNode(Node):
-	def __init__(self, position, name):
-		super().__init__(position)
-		self.name = name
-	
-	def __repr__(self):
-		return f'{self.name}++'
-
-
-class DecrementLeftNode(Node):
-	def __init__(self, position, name):
-		super().__init__(position)
-		self.name = name
-	
-	def __repr__(self):
-		return f'--{self.name}'
-
-
-class DecrementRightNode(Node):
-	def __init__(self, position, name):
-		super().__init__(position)
-		self.name = name
-	
-	def __repr__(self):
-		return f'{self.name}--'
-
-
 class DoWhileNode(Node):
 	def __init__(self, position, condition, body):
 		super().__init__(position)

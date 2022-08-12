@@ -127,12 +127,7 @@ class SemanticAnalyzer:
 				True if node.value else False,
 			)
 
-		elif isinstance(node, IdentifierNode) \
-				or isinstance(node, IncrementLeftNode) \
-				or isinstance(node, IncrementRightNode) \
-				or isinstance(node, DecrementLeftNode) \
-				or isinstance(node, DecrementRightNode):
-
+		elif isinstance(node, IdentifierNode):
 			if not self.variable_exists_in_the_current_scope(node.name):
 				error = UndefinedError(node.position, node.name)
 				error.show_error_and_abort()

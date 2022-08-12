@@ -255,41 +255,6 @@ class CodeGenerator:
 			self.generate_node(node.value)
 			self.emit_instruction(OpCodes.RET)
 
-		elif isinstance(node, IncrementLeftNode) \
-				or isinstance(node, DecrementLeftNode):
-			
-			self.emit_instruction(OpCodes.LDV)
-			self.emit_string(node.name)
-			
-			if isinstance(node, IncrementLeftNode):
-				self.emit_instruction(OpCodes.INC)
-
-			elif isinstance(node, DecrementLeftNode):
-				self.emit_instruction(OpCodes.DEC)
-
-			self.emit_instruction(OpCodes.DUP)
-
-			self.emit_instruction(OpCodes.STO)
-			self.emit_string(node.name)
-
-		elif isinstance(node, IncrementRightNode) \
-				or isinstance(node, DecrementRightNode):
-
-			self.emit_instruction(OpCodes.LDV)
-			self.emit_string(node.name)
-
-			self.emit_instruction(OpCodes.DUP)
-
-			if isinstance(node, IncrementRightNode):
-				self.emit_instruction(OpCodes.INC)
-
-			elif isinstance(node, DecrementRightNode):
-				self.emit_instruction(OpCodes.DEC)
-
-			self.emit_instruction(OpCodes.STO)
-			self.emit_string(node.name)
-
-
 		elif isinstance(node, DoWhileNode):
 			body_address = self.current_address
 			self.generate_node(node.body)
