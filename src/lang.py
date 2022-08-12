@@ -12,7 +12,6 @@ from lexer import Lexer
 from parser_ import Parser
 from semantic_analyzer import SemanticAnalyzer
 from code_generator import CodeGenerator
-from disassembler import Disassembler
 from vm import VM
 
 
@@ -78,21 +77,7 @@ def main():
 		with open(file_name + '.vm', 'wb') as f:
 			f.write(bytearray(code))
 
-	elif option == 'asm':
-		if len(sys.argv) < 3:
-			print('asm need <file>')
-			usage()
-			exit(1)
-
-		file_name = sys.argv[2]
-		code = compile_from_file(file_name)
-		disassembler = Disassembler(code)
-		disassembler.disassemble()
-
-	elif option == 'help':
-		usage()
-	
-	elif option == 'run':
+	elif option in ('run', 'asm'):
 		if len(sys.argv) < 3:
 			print('run need <file>')
 			usage()
@@ -101,7 +86,15 @@ def main():
 		file_name = sys.argv[2]
 		code = compile_from_file(file_name)
 		vm = VM(code)
-		vm.protected_run()
+
+		if option == 'run':
+			vm.protected_run()
+
+		elif option == 'asm':
+			vm.disassemble()
+
+	elif option == 'help':
+		usage()
 
 	else:
 		print(f'unknown option: {option}')

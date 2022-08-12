@@ -245,3 +245,79 @@ class VM:
 			else:
 				raise NotImplementedError(f'INSTRUCTION: {instr}')		
 
+	def disassemble(self):
+		opcodes_as_string = {
+			OpCodes.HLT: 'hlt',
+			OpCodes.LDI: 'ldi',
+			OpCodes.LDF: 'ldf',
+			OpCodes.LDS: 'lds',
+			OpCodes.STO: 'sto',
+			OpCodes.LDV: 'ldv',
+			OpCodes.JMP: 'jmp',
+			OpCodes.JPT: 'jpt',
+			OpCodes.JPF: 'jpf',
+			OpCodes.CAL: 'cal',
+			OpCodes.RET: 'ret',
+			OpCodes.LDN: 'ldn',
+			OpCodes.NOP: 'nop',
+			OpCodes.WRT: 'wrt',
+			OpCodes.ADD: 'add',
+			OpCodes.SUB: 'sub',
+			OpCodes.MUL: 'mul',
+			OpCodes.DIV: 'div',
+			OpCodes.EQ: 'eq',
+			OpCodes.NE: 'ne',
+			OpCodes.LT: 'lt',
+			OpCodes.LE: 'le',
+			OpCodes.GT: 'gt',
+			OpCodes.GE: 'ge',
+			OpCodes.NOT: 'not',
+			OpCodes.AND: 'and',
+			OpCodes.OR: 'or',
+			OpCodes.NEG: 'neg',
+			OpCodes.DUP: 'dup',
+			OpCodes.INC: 'inc',
+			OpCodes.DEC: 'dec',
+			OpCodes.LET: 'let',
+			OpCodes.BNT: 'bnt',
+			OpCodes.SHL: 'shl',
+			OpCodes.SHR: 'shr',
+			OpCodes.XOR: 'xor',
+			OpCodes.BOR: 'bor',
+			OpCodes.BND: 'bnd',
+			OpCodes.EXT: 'ext',
+			OpCodes.POP: 'pop',
+		}
+	
+		while self.pc < len(self.code):
+			instr = self.get_instruction()
+
+			if self.pc < 10:
+				pc_as_str = f' {self.pc}'
+			else:
+				pc_as_str = f'{self.pc}'
+
+			print(f' {pc_as_str}: {opcodes_as_string[instr]} ', end='')
+
+			if instr in (
+					OpCodes.LDI,
+					OpCodes.JMP,
+					OpCodes.JPT,
+					OpCodes.JPF,
+					OpCodes.CAL,
+				):
+
+				print(self.get_int32())
+
+			elif instr == OpCodes.LDS:
+				print('"' + self.data[self.get_int32()] + '"')
+
+			elif instr == OpCodes.LDF:
+				print(self.get_float())
+
+			elif instr in (OpCodes.STO, OpCodes.LDV, OpCodes.LET):
+				print(self.data[self.get_int32()])
+
+			else:
+				print()
+
