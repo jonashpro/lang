@@ -1,0 +1,10 @@
+// file
+
+fn main() {
+	let file = fopen("example.txt", "w");
+
+	fwrite(file, "hello world!");
+
+	fclose(file);
+}
+
