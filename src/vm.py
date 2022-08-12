@@ -132,7 +132,7 @@ class VM:
 	def run(self):
 		while True:
 			instr = self.get_instruction()
-
+			
 			if instr == OpCodes.HLT:
 				break
 
@@ -174,15 +174,29 @@ class VM:
 					self.free(self.variables[-1][variable])
 
 				self.variables.pop()
+		
+				# if the function no return
+				if not self.stack:
+					return_value = None
+
+				else:
+					return_value = self.stack.pop()
 
 				sp = self.call_stack.pop()
 				self.pc = self.call_stack.pop()
 
-				while len(self.stack) != sp:
+				while len(self.stack) > sp:
 					self.stack.pop()
 
+				self.stack.append(return_value)
+
 			elif instr == OpCodes.WRT:
-				print(self.stack.pop())
+				value = self.stack.pop()
+
+				if value is None:
+					value = 'nil'
+
+				print(value)
 
 			elif instr == OpCodes.LET:
 				name = self.get_int32()
@@ -190,7 +204,10 @@ class VM:
 
 			elif instr == OpCodes.STO:
 				name = self.get_int32()
-				self.memory[self.variables[-1][name]] = self.stack.pop()
+
+				value = self.stack.pop()
+
+				self.memory[self.variables[-1][name]] = value
 
 			elif instr == OpCodes.LDV:
 				name = self.get_int32()

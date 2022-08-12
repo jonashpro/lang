@@ -202,7 +202,6 @@ class CodeGenerator:
 				self.emit_string(argument.name)
 
 			self.generate_node(node.body)
-			self.emit_instruction(OpCodes.LDN)
 			self.emit_instruction(OpCodes.RET)
 
 			self.emit_int32(self.current_address, jump_to_end_address)
