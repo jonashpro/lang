@@ -5,15 +5,26 @@ if exists("b:current_syntax")
 	finish
 endif
 
-syntax keyword langKeywords fn do while if else return let include
+syntax keyword langKeyword fn do while if else return let include
 syntax region langComment start="//" end="$"
 syntax region langString start=/\v"/ end=/\v"/ skip=/\v\\./
-syntax match langNumber "\<[0-9]\+\>"
 
-hi def link langKeywords Keyword
+" numbers
+syntax match langNumberDecimal "\<[0-9]\+\>"
+syntax match langNumberBinary "\<0b[0-1]\+\>"
+syntax match langNumberOctal "\<0o[0-7]\+\>"
+syntax match langNumberHexadecimal "\<0x[0-9abcdefABCDEF]\+\>"
+
+syntax keyword langBoolean true false
+
+hi def link langKeyword Keyword
 hi def link langComment Comment
 hi def link langString String
-hi def link langNumber Number
+hi def link langNumberDecimal Number
+hi def link langNumberBinary Number
+hi def link langNumberOctal Number
+hi def link langNumberHexadecimal Number
+hi def link langBoolean Boolean
 
 let b:current_syntax = "lang"
 

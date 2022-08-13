@@ -175,6 +175,10 @@ class Lexer:
 				if token_value in self.keywords:
 					token_type = token_value
 
+				elif token_value in ('true', 'false'):
+					token_type = TokenType.TYPE_INT
+					token_value = 1 if token_value == 'true' else 0
+
 			elif self.current_char in DECIMAL_DIGITS:
 				token_value, token_type = self.get_number_token()
 
