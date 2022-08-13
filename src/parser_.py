@@ -29,6 +29,7 @@ class Parser:
 			TokenType.TYPE_INT: IntNode,
 			TokenType.TYPE_FLOAT: FloatNode,
 			TokenType.TYPE_STRING: StringNode,
+			TokenType.KEYWORD_NIL: NilNode,
 		}
 
 		# +=, -=, *=, /=
@@ -468,9 +469,10 @@ class Parser:
 		          |  '~' <factor>
 		          |  <list_declaration>
 		          |  <list_access>
+		          |  <nil>
 		"""
 
-		# <int> | <float> | <string>
+		# <int> | <float> | <string> | <nil>
 		if self.current_token.type in self.literal_nodes:
 			node = self.literal_nodes[self.current_token.type](
 				self.current_token.position,

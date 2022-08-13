@@ -132,6 +132,9 @@ class CodeGenerator:
 			self.emit_instruction(OpCodes.LDS)
 			self.emit_string(node.value)
 
+		elif isinstance(node, NilNode):
+			self.emit_instruction(OpCodes.LDN)
+
 		elif isinstance(node, UnaryOperationNode):
 			self.generate_node(node.left)
 

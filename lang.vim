@@ -15,7 +15,7 @@ syntax match langNumberBinary "\<0b[0-1]\+\>"
 syntax match langNumberOctal "\<0o[0-7]\+\>"
 syntax match langNumberHexadecimal "\<0x[0-9abcdefABCDEF]\+\>"
 
-syntax keyword langBoolean true false
+syntax keyword langConstant nil false true
 
 hi def link langKeyword Keyword
 hi def link langComment Comment
@@ -24,7 +24,7 @@ hi def link langNumberDecimal Number
 hi def link langNumberBinary Number
 hi def link langNumberOctal Number
 hi def link langNumberHexadecimal Number
-hi def link langBoolean Boolean
+hi def link langConstant Constant
 
 let b:current_syntax = "lang"
 

@@ -174,3 +174,8 @@ class ListAccessNode(Node):
 	def __repr__(self):
 		return f'(access {self.list} {self.index})'
 
+
+class NilNode(LiteralNode):
+	def __init__(self, position, value):
+		super().__init__(position, value)
+

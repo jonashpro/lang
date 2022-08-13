@@ -5,7 +5,6 @@ class TokenType:
 	TYPE_EOF = 'eof'
 	TYPE_INT = 'int'
 	TYPE_FLOAT = 'float'
-	TYPE_BOOL = 'bool'
 	TYPE_STRING = 'string'
 	TYPE_IDENTIFIER = 'identifier'
 
@@ -20,6 +19,7 @@ class TokenType:
 	KEYWORD_BREAK = 'break'
 	KEYWORD_CONTINUE = 'continue'
 	KEYWORD_INCLUDE = 'include'
+	KEYWORD_NIL = 'nil'
 
 	OPERATOR_PLUS = '+'
 	OPERATOR_MINUS = '-'

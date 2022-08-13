@@ -223,7 +223,8 @@ class SemanticAnalyzer:
 
 		elif isinstance(node, IntNode) \
 				or isinstance(node, FloatNode) \
-				or isinstance(node, StringNode):
+				or isinstance(node, StringNode) \
+				or isinstance(node, NilNode):
 			
 			# do nothing
 			pass
