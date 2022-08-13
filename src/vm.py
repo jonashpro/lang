@@ -404,72 +404,84 @@ class VM:
 
 	def disassemble(self):
 		opcodes_as_string = {
-			OpCodes.HLT: 'halt       ',
-			OpCodes.LDI: 'load int   ',
-			OpCodes.LDF: 'load float ',
-			OpCodes.LDS: 'load string',
-			OpCodes.STO: 'store      ',
-			OpCodes.LDV: 'load var   ',
-			OpCodes.JMP: 'jump       ',
-			OpCodes.JPT: 'jump true  ',
-			OpCodes.JPF: 'jump false ',
-			OpCodes.CAL: 'call       ',
-			OpCodes.RET: 'return     ',
-			OpCodes.LDN: 'load nil   ',
-			OpCodes.NOP: 'noop       ',
-			OpCodes.WRT: 'write      ',
-			OpCodes.ADD: 'add        ',
-			OpCodes.SUB: 'sub        ',
-			OpCodes.MUL: 'mul        ',
-			OpCodes.DIV: 'div        ',
-			OpCodes.EQ:  'eq         ',
-			OpCodes.NE:  'ne         ',
-			OpCodes.LT:  'lt         ',
-			OpCodes.LE:  'le         ',
-			OpCodes.GT:  'gt         ',
-			OpCodes.GE:  'ge         ',
-			OpCodes.NOT: 'not        ',
-			OpCodes.AND: 'and        ',
-			OpCodes.OR:  'or         ',
-			OpCodes.NEG: 'neg        ',
-			OpCodes.DUP: 'dup        ',
-			OpCodes.INC: 'inc        ',
-			OpCodes.DEC: 'dec        ',
-			OpCodes.LET: 'let        ',
-			OpCodes.BNT: 'btw not    ',
-			OpCodes.SHL: 'shift left ',
-			OpCodes.SHR: 'shift right',
-			OpCodes.XOR: 'xor        ',
-			OpCodes.BOR: 'btw or     ',
-			OpCodes.BND: 'btw and    ',
-			OpCodes.EXT: 'exit       ',
-			OpCodes.POP: 'pop        ',
-			OpCodes.LDL: 'load list  ',
-			OpCodes.GET: 'get        ',
-			OpCodes.APD: 'append     ',
-			OpCodes.LPP: 'list pop   ',
-			OpCodes.LEN: 'length     ',
-			OpCodes.CPY: 'copy       ',
-			OpCodes.TYP: 'type       ',
-			OpCodes.SET: 'set        ',
-			OpCodes.FOP: 'fopen      ',
-			OpCodes.FWT: 'fwrite     ',
-			OpCodes.FRD: 'fread      ',
-			OpCodes.FCL: 'fclose     ',
-			OpCodes.FRL: 'freadln    ',
-			OpCodes.POS: 'position   ',
+			OpCodes.HLT: 'halt   ',
+			OpCodes.LDI: 'iload  ',
+			OpCodes.LDF: 'fload  ',
+			OpCodes.LDS: 'sload  ',
+			OpCodes.STO: 'store  ',
+			OpCodes.LDV: 'vload  ',
+			OpCodes.JMP: 'jump   ',
+			OpCodes.JPT: 'jumpt  ',
+			OpCodes.JPF: 'jumpf  ',
+			OpCodes.CAL: 'call   ',
+			OpCodes.RET: 'ret    ',
+			OpCodes.LDN: 'nload  ',
+			OpCodes.NOP: 'nop    ',
+			OpCodes.WRT: 'write  ',
+			OpCodes.ADD: 'add    ',
+			OpCodes.SUB: 'sub    ',
+			OpCodes.MUL: 'mul    ',
+			OpCodes.DIV: 'div    ',
+			OpCodes.EQ:  'eq     ',
+			OpCodes.NE:  'ne     ',
+			OpCodes.LT:  'lt     ',
+			OpCodes.LE:  'le     ',
+			OpCodes.GT:  'gt     ',
+			OpCodes.GE:  'ge     ',
+			OpCodes.NOT: 'not    ',
+			OpCodes.AND: 'and    ',
+			OpCodes.OR:  'or     ',
+			OpCodes.NEG: 'neg    ',
+			OpCodes.DUP: 'dup    ',
+			OpCodes.INC: 'inc    ',
+			OpCodes.DEC: 'dec    ',
+			OpCodes.LET: 'let    ',
+			OpCodes.BNT: 'btw_not',
+			OpCodes.SHL: 'shl    ',
+			OpCodes.SHR: 'shr    ',
+			OpCodes.XOR: 'xor    ',
+			OpCodes.BOR: 'btw_or ',
+			OpCodes.BND: 'btw_and',
+			OpCodes.EXT: 'exit   ',
+			OpCodes.POP: 'pop    ',
+			OpCodes.LDL: 'lload  ',
+			OpCodes.GET: 'get    ',
+			OpCodes.APD: 'append ',
+			OpCodes.LPP: 'lpop   ',
+			OpCodes.LEN: 'length ',
+			OpCodes.CPY: 'copy   ',
+			OpCodes.TYP: 'type   ',
+			OpCodes.SET: 'set    ',
+			OpCodes.FOP: 'fopen  ',
+			OpCodes.FWT: 'fwrite ',
+			OpCodes.FRD: 'fread  ',
+			OpCodes.FCL: 'fclose ',
+			OpCodes.FRL: 'freadln',
+			OpCodes.POS: 'pos    ',
 		}
 	
 		while self.pc < len(self.code):
 			instr = self.get_instruction()
 
-			pc = self.pc - 1  # pc points to the next instruction
+			pc = self.pc - 1  # pc points to next instr
+
 			if pc < 10:
+				pc_as_str = f'  {pc}'
+
+			elif pc < 100:
 				pc_as_str = f' {pc}'
+
 			else:
 				pc_as_str = f'{pc}'
 
-			print(f' {pc_as_str}: {opcodes_as_string[instr]} ', end='')
+			if instr == OpCodes.POS:
+				self.file_name = self.data[self.get_int32()]
+				self.line = self.get_int32()
+				print(f'\033[1;32m{self.file_name}:%.2d:\033[0;0m' %self.line)
+				continue
+
+			else:
+				print(f'  {pc_as_str}: {opcodes_as_string[instr]} ', end='')
 
 			if instr in (
 					OpCodes.LDI,
