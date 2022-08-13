@@ -1,4 +1,3 @@
-# Lang Compiler
 # Author: Jonas
 
 import struct
@@ -105,7 +104,7 @@ class CodeGenerator:
 
 	def emit_string(self, string, custom_address=None):
 		"""Emit a string."""
-
+		
 		if string in self.data_section:
 			self.emit_int32(self.search_data(string), custom_address)
 
@@ -174,12 +173,12 @@ class CodeGenerator:
 			for argument in node.arguments:
 				self.generate_node(argument)
 
-
 			if node.name in built_in_functions:
 				self.emit_instruction(built_in_functions[node.name][1])
 				return
 
 			self.emit_instruction(OpCodes.CAL)
+			self.emit_string(node.name)
 
 			if node.name in self.functions_address:
 				self.emit_int32(self.functions_address[node.name])
@@ -301,6 +300,7 @@ class CodeGenerator:
 
 		# call the entry point
 		self.emit_instruction(OpCodes.CAL)
+		self.emit_string('main')
 		self.emit_int32(self.functions_address['main'])
 
 		# emit a halt instruction

@@ -125,6 +125,13 @@ class VM:
 		"""Emit a panic error and exit."""
 
 		print(f'panic: {error}', file=sys.stderr)
+
+		while self.call_stack:
+			self.call_stack.pop()  # sp
+			self.call_stack.pop()  # pc
+			function = self.call_stack.pop()
+			print(f'  in function {function}')
+
 		exit(1)
 
 	def protected_run(self):
@@ -182,7 +189,9 @@ class VM:
 
 			elif instr == OpCodes.CAL:
 				self.variables.append(self.variables[-1].copy())
+				name = self.data[self.get_int32()]
 				address = self.get_int32()
+				self.call_stack.append(name)
 				self.call_stack.append(self.pc)
 				self.call_stack.append(len(self.stack))
 				self.pc = address
@@ -202,6 +211,7 @@ class VM:
 
 				sp = self.call_stack.pop()
 				self.pc = self.call_stack.pop()
+				name = self.call_stack.pop()
 
 				while len(self.stack) > sp:
 					self.stack.pop()
@@ -419,7 +429,6 @@ class VM:
 					OpCodes.JMP,
 					OpCodes.JPT,
 					OpCodes.JPF,
-					OpCodes.CAL,
 				):
 
 				print(self.get_int32())
@@ -429,6 +438,11 @@ class VM:
 				string = string.replace('\n', '\\n')
 				string = string.replace('\r', '\\r')
 				print('"' + string + '"')
+
+			elif instr == OpCodes.CAL:
+				name = self.data[self.get_int32()]
+				address = self.get_int32()
+				print(f'{name} // address {address}')
 
 			elif instr == OpCodes.LDF:
 				print(self.get_float())
