@@ -119,6 +119,10 @@ class CodeGenerator:
 		return, because is unecessary
 		"""
 
+		self.emit_instruction(OpCodes.POS)
+		self.emit_string(node.position.file_name)
+		self.emit_int32(node.position.line)
+
 		if isinstance(node, IntNode):
 			self.emit_instruction(OpCodes.LDI)
 			self.emit_int32(node.value)

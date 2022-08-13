@@ -55,4 +55,5 @@ class OpCodes:
 	FRD = 50  # file read
 	FCL = 51  # file close
 	FRL = 52  # read line
+	POS = 53  # position <file> <line> <column>
 

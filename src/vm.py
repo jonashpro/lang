@@ -37,6 +37,9 @@ class VM:
 
 		self.variables = [{}]
 
+		self.file_name = None
+		self.line = None
+
 		self.binary_operations = {
 			OpCodes.ADD: lambda a, b: a + b,
 			OpCodes.SUB: lambda a, b: a - b,
@@ -152,13 +155,18 @@ class VM:
 	def panic_error(self, error):
 		"""Emit a panic error and exit."""
 
-		print(f'panic: {error}', file=sys.stderr)
+		print(
+			f'{self.file_name}:%.2d: panic: {error}' %self.line,
+			file=sys.stderr,
+		)
 
 		while self.call_stack:
 			self.call_stack.pop()  # sp
 			self.call_stack.pop()  # pc
+			line = self.call_stack.pop()
+			file_name = self.call_stack.pop()
 			function = self.call_stack.pop()
-			print(f'  in function {function}')
+			print(f'  {file_name}:%.2d: call function {function}' %line)
 
 		exit(1)
 
@@ -185,6 +193,10 @@ class VM:
 			
 			if instr == OpCodes.HLT:
 				break
+
+			elif instr == OpCodes.POS:
+				self.file_name = self.data[self.get_int32()]
+				self.line = self.get_int32()
 
 			elif instr == OpCodes.LDI:
 				self.stack.append(self.get_int32())
@@ -220,6 +232,8 @@ class VM:
 				name = self.data[self.get_int32()]
 				address = self.get_int32()
 				self.call_stack.append(name)
+				self.call_stack.append(self.file_name)
+				self.call_stack.append(self.line)
 				self.call_stack.append(self.pc)
 				self.call_stack.append(len(self.stack))
 				self.pc = address
@@ -239,6 +253,8 @@ class VM:
 
 				sp = self.call_stack.pop()
 				self.pc = self.call_stack.pop()
+				line = self.call_stack.pop()
+				file_name = self.call_stack.pop()
 				name = self.call_stack.pop()
 
 				while len(self.stack) > sp:
@@ -260,9 +276,7 @@ class VM:
 
 			elif instr == OpCodes.STO:
 				name = self.get_int32()
-
 				value = self.stack.pop()
-
 				self.memory[self.variables[-1][name]] = value
 
 			elif instr == OpCodes.LDV:
@@ -443,6 +457,7 @@ class VM:
 			OpCodes.FRD: 'fread      ',
 			OpCodes.FCL: 'fclose     ',
 			OpCodes.FRL: 'freadln    ',
+			OpCodes.POS: 'position   ',
 		}
 	
 		while self.pc < len(self.code):
