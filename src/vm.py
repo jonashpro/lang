@@ -12,6 +12,14 @@ from opcodes import OpCodes
 
 MEMORY_SIZE = 1024
 
+# errors
+ILLEGAL_OPERATION_ERROR = 'illegal operation: %s %s %s'
+DIVISION_BY_ZERO_ERROR = 'division by zero'
+NEGATIVE_SHIFT_COUNT_ERROR = 'negative shift count'
+VALUE_IS_NOT_SUBSCRIPTABLE = '%s value is not subscriptable'
+INVALID_INDEX_ERROR = 'invalid index'
+LIST_INDEX_OUT_OF_RANGE_ERROR = 'list index out of range error'
+
 
 class VM:
 	def __init__(self, code):
@@ -47,6 +55,26 @@ class VM:
 			OpCodes.BOR: lambda a, b: a | b,
 			OpCodes.BND: lambda a, b: a & b,
 			OpCodes.NE: lambda a, b: a != b,
+		}
+
+		self.binary_operations_as_str = {
+			OpCodes.ADD: '+',
+			OpCodes.SUB: '-',
+			OpCodes.MUL: '*',
+			OpCodes.DIV: '/',
+			OpCodes.EQ: '==',
+			OpCodes.LT: '<',
+			OpCodes.LE: '<=',
+			OpCodes.GT: '>',
+			OpCodes.GE: '>=',
+			OpCodes.AND: '&&',
+			OpCodes.OR: '||',
+			OpCodes.XOR: '^',
+			OpCodes.SHL: '<<',
+			OpCodes.SHR: '>>',
+			OpCodes.BOR: '|',
+			OpCodes.BND: '&',
+			OpCodes.NE: '!=',
 		}
 
 		self.unary_operations = {
@@ -249,11 +277,23 @@ class VM:
 				b = self.stack.pop()
 				a = self.stack.pop()
 
+				# check if operation is valid
 				try:
-					self.stack.append(self.binary_operations[instr](a, b))
+					a + b
+				except TypeError:
+					self.panic_error(ILLEGAL_OPERATION_ERROR %(
+						type(a).__name__,
+						self.binary_operations_as_str[instr],
+						type(b).__name__,
+					))
 
-				except Exception as err:
-					self.panic_error(err)
+				if instr == OpCodes.DIV and b == 0:
+					self.panic_error(DIVISION_BY_ZERO_ERROR)
+
+				elif instr in (OpCodes.SHL, OpCodes.SHR) and b < 0:
+					self.panic_error(NEGATIVE_SHIFT_COUNT_ERROR)
+
+				self.stack.append(self.binary_operations[instr](a, b))
 
 			elif instr in self.unary_operations:
 				a = self.stack.pop()
@@ -278,11 +318,18 @@ class VM:
 				index = self.stack.pop()
 				list_ = self.stack.pop()
 
-				try:
-					self.stack.append(list_[index])
+				if not isinstance(list_, list):
+					self.panic_error(VALUE_IS_NOT_SUBSCRIPTABLE %(
+						type(list_).__name__
+					))
 
-				except IndexError:
-					self.panic_error('invalid index')
+				if not isinstance(index, int):
+					self.panic_error(INVALID_INDEX_ERROR)
+
+				if index > len(list_) - 1:
+					self.panic_error(LIST_INDEX_OUT_OF_RANGE_ERROR)
+
+				self.stack.append(list_[index])
 
 			elif instr == OpCodes.APD:
 				list_ = self.stack.pop()
@@ -302,22 +349,7 @@ class VM:
 
 			elif instr == OpCodes.TYP:
 				value = self.stack.pop()
-
-				if isinstance(value, str):
-					typ = 'string'
-
-				elif isinstance(value, int):
-					typ = 'int'
-
-				elif isinstance(value, float):
-					typ = 'float'
-
-				elif isinstance(value, list):
-					typ = 'list'
-
-				else:
-					typ = type(value)
-
+				typ = type(value).__name__
 				self.stack.append(typ)
 
 			elif instr == OpCodes.SET:
